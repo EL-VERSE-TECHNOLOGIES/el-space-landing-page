@@ -89,23 +89,190 @@ The EL SPACE Team
   return sendEmail({ to: email, subject, text: replacePlaceholders(text, data) });
 }
 
-// OTP Email
+// OTP Email with HTML template
 export async function sendOTPEmail(email: string, otp: string, type: 'register' | 'login' | 'transfer' | 'withdrawal') {
   const subject = type === 'register' 
     ? 'Verify Your Email - EL SPACE'
     : 'Your OTP Code - EL SPACE';
   
-  const text = `
-Your verification code is: ${otp}
+  const getTitle = () => {
+    switch(type) {
+      case 'register': return 'Verify Your Email';
+      case 'login': return 'Login Verification';
+      case 'transfer': return 'Confirm Transfer';
+      case 'withdrawal': return 'Confirm Withdrawal';
+      default: return 'Verification Code';
+    }
+  };
 
-This code will expire in 15 minutes.
+  const getDescription = () => {
+    switch(type) {
+      case 'register': return 'Welcome to EL SPACE! Please verify your email to get started.';
+      case 'login': return 'Someone tried to log in to your account. Use this code to proceed.';
+      case 'transfer': return 'Please confirm this transfer with your verification code.';
+      case 'withdrawal': return 'Please confirm this withdrawal with your verification code.';
+      default: return 'Use this code to proceed with your verification.';
+    }
+  };
 
-If you didn't request this, please ignore this email.
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f9fafb;
+    }
+    .email-body {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .header p {
+      margin: 10px 0 0 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 30px 20px;
+    }
+    .otp-box {
+      background: linear-gradient(135deg, #f0f9ff 0%, #f3e8ff 100%);
+      border: 2px solid #06b6d4;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .otp-code {
+      font-size: 48px;
+      font-weight: 700;
+      color: #06b6d4;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 8px;
+      margin: 0;
+      word-break: break-all;
+    }
+    .otp-expiry {
+      color: #666;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .info-box {
+      background: #f9fafb;
+      border-left: 4px solid #06b6d4;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .info-box ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .info-box li {
+      color: #666;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+    .footer {
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+    }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+      .content {
+        padding: 20px 15px;
+      }
+      .otp-code {
+        font-size: 36px;
+        letter-spacing: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="email-body">
+      <div class="header">
+        <h1>${getTitle()}</h1>
+        <p>${getDescription()}</p>
+      </div>
+      
+      <div class="content">
+        <p>Hi there,</p>
+        
+        <p>Use this verification code to complete your ${type === 'register' ? 'registration' : type === 'login' ? 'login' : type === 'transfer' ? 'transfer' : 'withdrawal'}:</p>
+        
+        <div class="otp-box">
+          <p class="otp-code">${otp.split('').join(' ')}</p>
+          <p class="otp-expiry">⏰ This code expires in 15 minutes</p>
+        </div>
+        
+        <div class="info-box">
+          <ul>
+            <li>✅ This code was sent to your registered email</li>
+            <li>🔒 Never share this code with anyone</li>
+            <li>⚠️ If you didn't request this, please ignore this email</li>
+          </ul>
+        </div>
+        
+        <p style="font-size: 14px; color: #666;">
+          If you're having trouble, copy and paste this code into the verification field:
+        </p>
+        <p style="background: #f0f9ff; padding: 10px; border-radius: 4px; text-align: center; font-family: 'Courier New', monospace; font-size: 16px; color: #06b6d4; font-weight: 600;">
+          ${otp}
+        </p>
+      </div>
+      
+      <div class="footer">
+        <p>© 2026 EL SPACE - Freelance Without Friction</p>
+        <p>This is an automated email. Please do not reply to this message.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+  `;
 
-The EL SPACE Team
-  `.trim();
-  
-  return sendEmail({ to: email, subject, text });
+  return sendEmail({ to: email, subject, html });
 }
 
 // Milestone Funded Email
