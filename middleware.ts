@@ -4,8 +4,7 @@ import { type NextRequest, NextResponse } from "next/server";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const createClient = (request: NextRequest) => {
-  // Create an unmodified response
+export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request: {
       headers: request.headers,
@@ -33,18 +32,10 @@ export const createClient = (request: NextRequest) => {
     },
   );
 
-  return supabaseResponse
-};
-
-export async function middleware(request: NextRequest) {
-  const response = createClient(request);
-  
   // Get the session to check if user is authenticated
   const {
     data: { session },
-  } = await response.cookies.getAll().length > 0 
-    ? await createClient(request).auth.getSession()
-    : { data: { session: null } };
+  } = await supabase.auth.getSession();
 
   // Protected routes that require authentication
   const protectedPaths = ['/dashboard', '/freelancer/dashboard', '/client/dashboard', '/jobs/post', '/earnings'];
@@ -66,7 +57,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  return response;
+  return supabaseResponse;
 }
 
 export const config = {
