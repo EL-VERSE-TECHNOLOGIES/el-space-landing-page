@@ -96,6 +96,7 @@ export default function RegisterPage() {
 
       setSuccess("Registration successful! Welcome to EL SPACE!");
       localStorage.setItem("authToken", verifyData.token);
+      localStorage.setItem("user", JSON.stringify(registerData.user));
       setTimeout(() => router.push("/dashboard"), 1500);
     } catch (err: any) {
       setError(err.message || "An error occurred");

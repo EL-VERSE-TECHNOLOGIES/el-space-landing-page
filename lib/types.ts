@@ -12,6 +12,7 @@ export type AvailabilityStatus = 'available' | 'busy' | 'unavailable';
 // User Interface
 export interface User {
   id: string;
+  el_space_id: string;
   email: string;
   name: string;
   user_type: UserType;

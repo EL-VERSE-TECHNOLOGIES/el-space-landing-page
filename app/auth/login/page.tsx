@@ -66,6 +66,9 @@ export default function LoginPage() {
 
       setSuccess("Login successful!");
       localStorage.setItem("authToken", data.token);
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
       setTimeout(() => router.push("/dashboard"), 1500);
     } catch (err: any) {
       setError(err.message || "An error occurred");
@@ -191,7 +194,7 @@ export default function LoginPage() {
             <p className="text-center text-slate-400 text-sm">
               Don't have an account?{" "}
               <Link
-                href="/register"
+                href="/auth/register"
                 className="text-cyan-400 hover:text-cyan-300 font-semibold"
               >
                 Register here

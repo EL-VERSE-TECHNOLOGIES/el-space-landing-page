@@ -9,7 +9,14 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // ============ USERS ============
 
 export const createUser = async (email: string, name: string, userType: 'client' | 'freelancer') => {
-  const el_space_id = `EL-${Math.floor(10000000 + Math.random() * 90000000)}`;
+  let el_space_id = `EL-${Math.floor(10000000 + Math.random() * 90000000)}`;
+  
+  // Try to ensure uniqueness (simple check, though in production you'd use a DB constraint)
+  const { data: existing } = await getUserBySpaceId(el_space_id);
+  if (existing) {
+    el_space_id = `EL-${Math.floor(10000000 + Math.random() * 90000000)}`;
+  }
+
   const { data, error } = await supabase
     .from('users')
     .insert([{ 
@@ -355,7 +362,6 @@ export const getFreelancerEarnings = async (freelancerId: string) => {
 export const createTimeLog = async (timeLogData: any) => {
   const { data, error } = await supabase
     .from('time_logs')
-    .select('*')
     .insert([timeLogData])
     .select();
   return { data: data?.[0], error };

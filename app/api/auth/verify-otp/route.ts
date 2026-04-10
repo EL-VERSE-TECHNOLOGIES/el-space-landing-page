@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyOTP } from '@/lib/otp';
+import { getUser } from '@/lib/supabase';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'el-space-secret-key';
@@ -25,9 +26,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get user info if they exist
+    const { data: user } = await getUser(email);
+
     // Create a specific token based on type
     const payload = { 
       email, 
+      userId: user?.id,
+      elSpaceId: user?.el_space_id,
       type, 
       verified: true, 
       timestamp: Date.now() 
@@ -40,6 +46,7 @@ export async function POST(request: NextRequest) {
         success: true, 
         message: result.message, 
         token,
+        user,
         type 
       },
       { status: 200 }

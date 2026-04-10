@@ -9,12 +9,23 @@ export default function DashboardPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState("");
+  const [elSpaceId, setElSpaceId] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (!token) {
       router.push("/auth/login");
+      return;
+    }
+
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserName(user.name || user.email);
+      setElSpaceId(user.el_space_id || "EL-XXXXXXXX");
+      setIsAuthenticated(true);
+      setLoading(false);
       return;
     }
 
@@ -77,9 +88,14 @@ export default function DashboardPage() {
           <h2 className="text-2xl font-bold text-slate-900 mb-4">
             Welcome to your Dashboard! 🎉
           </h2>
-          <p className="text-slate-600 mb-8">
-            You're logged in as: <strong>{userName}</strong>
-          </p>
+          <div className="flex flex-wrap gap-4 mb-8">
+            <p className="text-slate-600">
+              User: <strong>{userName}</strong>
+            </p>
+            <p className="text-slate-600">
+              EL SPACE ID: <strong className="text-cyan-600">{elSpaceId}</strong>
+            </p>
+          </div>
 
           <div className="space-y-6">
             <div>

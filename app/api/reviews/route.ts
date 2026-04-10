@@ -44,9 +44,15 @@ export async function GET(request: NextRequest) {
     const { data, error } = await getReviewsByUser(userId);
 
     if (error) throw error;
+    if (!data) {
+      return NextResponse.json({
+        reviews: [],
+        stats: { averageRating: 0, totalReviews: 0 }
+      });
+    }
 
     // Calculate review stats
-    const avgRating = data.length > 0 ? (data.reduce((sum: number, r: any) => sum + r.rating, 0) / data.length).toFixed(1) : 0;
+    const avgRating = data.length > 0 ? (data.reduce((sum: number, r: any) => sum + r.rating, 0) / data.length).toFixed(1) : "0";
 
     return NextResponse.json({
       reviews: data.filter((r: any) => r.is_public),
