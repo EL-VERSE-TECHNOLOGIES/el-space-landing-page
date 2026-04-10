@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyOTP } from '@/lib/otp';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'el-space-secret-key';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, otp } = await request.json();
+    const { email, otp, type = 'auth' } = await request.json();
 
     if (!email || !otp) {
       return NextResponse.json(
@@ -22,21 +25,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create a session token (in production, use a proper session management)
-    const token = Buffer.from(JSON.stringify({ email, verified: true, timestamp: Date.now() })).toString('base64');
+    // Create a specific token based on type
+    const payload = { 
+      email, 
+      type, 
+      verified: true, 
+      timestamp: Date.now() 
+    };
+    
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: type === 'auth' ? '7d' : '15m' });
 
-    // Set cookie
     const response = NextResponse.json(
-      { success: true, message: result.message, token },
+      { 
+        success: true, 
+        message: result.message, 
+        token,
+        type 
+      },
       { status: 200 }
     );
 
-    response.cookies.set('el-space-auth', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-    });
+    if (type === 'auth') {
+      response.cookies.set('el-space-auth', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60, // 7 days
+      });
+    }
 
     return response;
   } catch (error) {

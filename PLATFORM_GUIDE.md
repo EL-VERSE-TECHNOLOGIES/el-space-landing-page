@@ -313,6 +313,8 @@ The platform uses Korapay for secure payments and escrow.
 1. **Wallet Funding**: Clients fund their wallet via Korapay.
 2. **Escrow**: Funds are moved from wallet to project escrow when a project starts.
 3. **Payouts**: Funds are released to freelancers (minus fees and late penalties) upon client approval.
+4. **Internal Transfers**: Users can send funds to each other using their unique **EL SPACE ID** (e.g., EL-X7Y2Z). These actions are OTP-protected.
+5. **Withdrawals**: Freelancers can withdraw funds to their bank accounts or crypto wallets (USDT, SOL, USDC) via Korapay. These actions are OTP-protected.
 
 ### Fees
 - **Clients**: $19 flat (<$500), 5% ($500-$5k), 3% ($5k+)
@@ -321,6 +323,29 @@ The platform uses Korapay for secure payments and escrow.
 
 ### Penalties
 - **Late Submission**: $20 flat penalty deducted from freelancer profit.
+
+---
+
+## 📱 Platform Features
+
+### 📰 Project Feed
+The discovery engine for freelancers. A real-time feed of open projects matched to skills.
+
+### 🆔 EL SPACE ID
+Every user is assigned a unique ID upon registration. This ID is used for:
+- Internal fund transfers.
+- Profile discovery.
+- Community interactions.
+
+### 🔐 Security (OTP)
+One-Time Passwords are required for:
+- Account Registration.
+- Login (Passwordless).
+- Internal Fund Transfers.
+- Withdrawals.
+
+### 🗑️ Account Deletion
+Users can delete their accounts at any time from their profile settings if they are not satisfied with the service.
 
 ---
 

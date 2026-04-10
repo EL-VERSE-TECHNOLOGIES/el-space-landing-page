@@ -9,11 +9,29 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // ============ USERS ============
 
 export const createUser = async (email: string, name: string, userType: 'client' | 'freelancer') => {
+  const el_space_id = `EL-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
   const { data, error } = await supabase
     .from('users')
-    .insert([{ email, name, user_type: userType, verified_badge: 0, role: 'user' }])
+    .insert([{ 
+      email, 
+      name, 
+      user_type: userType, 
+      verified_badge: 0, 
+      role: 'user',
+      el_space_id,
+      created_at: new Date(),
+      updated_at: new Date()
+    }])
     .select();
   return { data: data?.[0], error };
+};
+
+export const deleteUser = async (userId: string) => {
+  const { error } = await supabase
+    .from('users')
+    .delete()
+    .eq('id', userId);
+  return { error };
 };
 
 export const getUser = async (email: string) => {
@@ -34,7 +52,16 @@ export const getUserById = async (id: string) => {
   return { data, error };
 };
 
-// ============ PROJECTS ============
+export const getUserBySpaceId = async (spaceId: string) => {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('el_space_id', spaceId)
+    .single();
+  return { data, error };
+};
+
+// ============ PROJECTS & FEED ============
 
 export const createProject = async (projectData: any) => {
   const { data, error } = await supabase
@@ -68,6 +95,19 @@ export const getOpenProjects = async () => {
     .select('*')
     .eq('status', 'open')
     .order('created_at', { ascending: false });
+  return { data, error };
+};
+
+export const getProjectFeed = async (limit = 20) => {
+  const { data, error } = await supabase
+    .from('projects')
+    .select(`
+      *,
+      client:users!client_id(name, avatar_url)
+    `)
+    .eq('status', 'open')
+    .order('created_at', { ascending: false })
+    .limit(limit);
   return { data, error };
 };
 
@@ -150,7 +190,7 @@ export const updateMilestoneStatus = async (milestoneId: string, status: string)
   return { data: data?.[0], error };
 };
 
-// ============ WALLETS ============
+// ============ WALLETS & TRANSFERS ============
 
 export const getWallet = async (userId: string) => {
   const { data, error } = await supabase
@@ -181,6 +221,21 @@ export const updateWalletBalance = async (userId: string, amount: number) => {
     amount_param: amount
   });
   return { data, error };
+};
+
+export const internalTransfer = async (fromUserId: string, toSpaceId: string, amount: number) => {
+  // 1. Get recipient
+  const { data: recipient, error: recError } = await getUserBySpaceId(toSpaceId);
+  if (recError || !recipient) throw new Error('Recipient not found');
+
+  // 2. Perform atomic transfer via RPC
+  const { data, error } = await supabase.rpc('process_internal_transfer', {
+    sender_id: fromUserId,
+    recipient_id: recipient.id,
+    transfer_amount: amount
+  });
+  
+  return { data, error, recipient };
 };
 
 // ============ PAYMENTS ============
@@ -300,6 +355,7 @@ export const getFreelancerEarnings = async (freelancerId: string) => {
 export const createTimeLog = async (timeLogData: any) => {
   const { data, error } = await supabase
     .from('time_logs')
+    .select('*')
     .insert([timeLogData])
     .select();
   return { data: data?.[0], error };

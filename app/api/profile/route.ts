@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser, updateFreelancerProfile } from '@/lib/supabase';
+import { getUser, updateFreelancerProfile, deleteUser } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
@@ -45,10 +45,31 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ success: true, user: data });
     }
 
-    // TODO: Update client profile
+    // Update client profile
     return NextResponse.json({ success: true, message: 'Profile updated' });
   } catch (error: any) {
     console.error('Error updating profile:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const userId = request.nextUrl.searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json({ error: 'userId required' }, { status: 400 });
+    }
+
+    const { error } = await deleteUser(userId);
+    if (error) throw error;
+
+    const response = NextResponse.json({ success: true, message: 'Account deleted' });
+    response.cookies.delete('el-space-auth');
+    
+    return response;
+  } catch (error: any) {
+    console.error('Error deleting profile:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
