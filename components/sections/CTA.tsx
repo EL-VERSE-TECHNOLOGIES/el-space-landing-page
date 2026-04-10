@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export function CTA() {
   return (
@@ -14,19 +15,23 @@ export function CTA() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button
-              size="lg"
-              className="bg-white text-primary hover:bg-white/90 font-semibold"
-            >
-              Post a Job Today
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white/10 font-semibold"
-            >
-              Apply as a Freelancer
-            </Button>
+            <Link href="/auth/register">
+              <Button
+                size="lg"
+                className="bg-white text-primary hover:bg-white/90 font-semibold"
+              >
+                Post a Job Today
+              </Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white/10 font-semibold"
+              >
+                Apply as a Freelancer
+              </Button>
+            </Link>
           </div>
 
           <p className="text-sm text-white/70 pt-4">

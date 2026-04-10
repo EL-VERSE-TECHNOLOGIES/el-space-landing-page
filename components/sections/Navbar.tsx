@@ -31,19 +31,23 @@ export function Navbar() {
 
         {/* CTA Buttons */}
         <div className="flex items-center gap-2 md:gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden border-accent text-accent hover:bg-accent/10 sm:flex"
-          >
-            Apply as Freelancer
-          </Button>
-          <Button
-            size="sm"
-            className="bg-amber-400 text-white hover:bg-amber-400/90"
-          >
-            Post a Job
-          </Button>
+          <Link href="/auth/register">
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden border-accent text-accent hover:bg-accent/10 sm:flex"
+            >
+              Apply as Freelancer
+            </Button>
+          </Link>
+          <Link href="/auth/register">
+            <Button
+              size="sm"
+              className="bg-amber-400 text-white hover:bg-amber-400/90"
+            >
+              Post a Job
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>

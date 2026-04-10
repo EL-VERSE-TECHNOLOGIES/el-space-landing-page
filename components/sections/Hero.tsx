@@ -1,5 +1,6 @@
 import { HERO_CLIENT, HERO_FREELANCER } from '@/lib/constants'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export function Hero() {
 
@@ -25,12 +26,14 @@ export function Hero() {
                 {HERO_CLIENT.fee}
               </p>
             </div>
-            <Button
-              size="lg"
-              className="w-fit bg-amber-400 text-white hover:bg-amber-400/90"
-            >
-              {HERO_CLIENT.cta} →
-            </Button>
+            <Link href="/auth/register" className="w-fit">
+              <Button
+                size="lg"
+                className="bg-amber-400 text-white hover:bg-amber-400/90"
+              >
+                {HERO_CLIENT.cta} →
+              </Button>
+            </Link>
           </div>
 
           {/* Divider - Hidden on mobile */}
@@ -54,13 +57,15 @@ export function Hero() {
                 {HERO_FREELANCER.fee}
               </p>
             </div>
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-fit border-accent text-accent hover:bg-accent/10"
-            >
-              {HERO_FREELANCER.cta} →
-            </Button>
+            <Link href="/auth/register" className="w-fit">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-accent text-accent hover:bg-accent/10"
+              >
+                {HERO_FREELANCER.cta} →
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
