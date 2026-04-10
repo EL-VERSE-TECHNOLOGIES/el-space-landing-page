@@ -174,6 +174,59 @@ export const COUNTRY_DIALING_CODES = [
   { country: "Zimbabwe", code: "ZW", dial: "+263" },
 ];
 
+// Ecosystem brands for TrustBar
+export const ECOSYSTEM_BRANDS = [
+  "ELCODERS",
+  "EL SPACE",
+  "ELITES",
+  "ELACCESS",
+  "NEXEL",
+];
+
+// FAQ items
+export const FAQ_ITEMS = [
+  {
+    question: "What is EL SPACE?",
+    answer: "EL SPACE is a premium freelancing platform built for serious professionals. It connects talented freelancers with clients seeking high-quality work, with built-in escrow protection, milestone tracking, and verified talent badges.",
+    category: "client",
+  },
+  {
+    question: "How does payment protection work?",
+    answer: "All payments are held securely in escrow. Clients fund milestones upfront, and freelancers are paid when work is delivered and approved. This protects both parties and ensures fair transactions.",
+    category: "client",
+  },
+  {
+    question: "What are the fees?",
+    answer: "We use a tiered pricing model. Clients pay a small service fee on top of project costs, and freelancers pay a competitive commission that decreases as they earn more. Check our pricing section for details.",
+    category: "client",
+  },
+  {
+    question: "How do I get verified?",
+    answer: "Complete your profile, upload your portfolio, and pass our skills assessment test. Verified freelancers get a badge, higher visibility, and access to premium projects.",
+    category: "freelancer",
+  },
+  {
+    question: "How do I find projects?",
+    answer: "Browse the job board, get matched through our smart algorithm, or be discovered by clients based on your skills and portfolio. Active freelancers with complete profiles get more opportunities.",
+    category: "freelancer",
+  },
+  {
+    question: "When do I get paid?",
+    answer: "Once you deliver work and the client approves the milestone, funds are released from escrow to your wallet. You can then withdraw to your bank account within 2-3 business days.",
+    category: "freelancer",
+  },
+  {
+    question: "What if there's a dispute?",
+    answer: "Our dispute resolution system ensures fair outcomes. Both parties can submit evidence, and our mediation team will review the case to reach a fair decision.",
+    category: "freelancer",
+  },
+  {
+    question: "Can I work with international clients?",
+    answer: "Yes! EL SPACE supports global transactions with multiple payment methods and currency conversion. Work with clients and freelancers from anywhere in the world.",
+    category: "freelancer",
+  },
+];
+
 // Industries for clients
 export const INDUSTRIES = [
   "Technology & Software",
