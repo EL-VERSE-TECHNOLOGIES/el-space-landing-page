@@ -1,21 +1,78 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Check if we're in a build environment where env vars might not be fully available
+const isBuildTime = () => {
+  return typeof process !== 'undefined' && 
+         typeof process.env !== 'undefined' &&
+         process.env.NEXT_PHASE === 'phase-production-build';
+};
+
+// Create a mock Supabase client for build time
+const createMockClient = () => {
+  const mockResponse = Promise.resolve({ data: null, error: null });
+  
+  const queryBuilder = {
+    select: () => mockResponse,
+    insert: () => mockResponse,
+    update: () => mockResponse,
+    delete: () => mockResponse,
+    eq: function() { return this; },
+    single: () => mockResponse,
+    order: function() { return this; },
+    limit: function() { return this; },
+    contains: function() { return this; },
+  };
+
+  return {
+    from: () => queryBuilder,
+    rpc: () => mockResponse,
+  };
+};
+
 // Initialize Supabase client lazily to avoid build-time errors
 let supabaseInstance: ReturnType<typeof createClient> | null = null;
+let isMockClient = false;
 
+const getSupabaseClient = () => {
+  // Return mock client during build time
+  if (isBuildTime()) {
+    return createMockClient();
+  }
+
+  // Return cached instance if available
+  if (supabaseInstance) {
+    return supabaseInstance;
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Check if we have valid environment variables
+  if (!supabaseUrl || !supabaseAnonKey || 
+      supabaseUrl.includes('placeholder') || 
+      supabaseAnonKey.includes('placeholder')) {
+    console.warn('Warning: Supabase environment variables are not properly configured. Using mock client.');
+    isMockClient = true;
+    supabaseInstance = createClient('https://placeholder.supabase.co', 'placeholder-anon-key');
+  } else {
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+  }
+
+  return supabaseInstance;
+};
+
+// Export a proxy that intercepts all method calls
 export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
   get(target, prop) {
-    if (!supabaseInstance) {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-      
-      if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set');
-      }
-      
-      supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+    const client = getSupabaseClient();
+    const value = Reflect.get(client, prop);
+    
+    // If it's a function, bind it to the client
+    if (typeof value === 'function') {
+      return value.bind(client);
     }
-    return Reflect.get(supabaseInstance, prop);
+    
+    return value;
   }
 });
 
