@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -13,18 +14,55 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 import Image from "next/image";
-import { AlertCircle, CheckCircle, Loader, Mail } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader, Mail, Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [step, setStep] = useState<"email" | "otp">("email");
+  
+  // Step management: email -> password -> otp
+  const [step, setStep] = useState<"email" | "password" | "otp">("email");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [showOtpPopup, setShowOtpPopup] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+
+  const handleCheckEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      // Check if user exists
+      const response = await fetch("/api/auth/check-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.exists) {
+        setError("No account found with this email. Please register first.");
+        setLoading(false);
+        return;
+      }
+
+      setUserData(data.user);
+      setSuccess("Account found! Please enter your password.");
+      setStep("password");
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,21 +70,25 @@ export default function LoginPage() {
     setError("");
 
     try {
+      // Verify password first by attempting to send OTP with password validation
       const response = await fetch("/api/auth/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, type: "login" }),
+        body: JSON.stringify({ 
+          email, 
+          type: "login",
+          metadata: { password }
+        }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Failed to send OTP");
+        setError(data.error || "Failed to send OTP. Check your password.");
         setLoading(false);
         return;
       }
 
-      // Show OTP in popup modal
       if (data.otp) {
         setGeneratedOtp(data.otp);
         setShowOtpPopup(true);
@@ -70,13 +112,14 @@ export default function LoginPage() {
       const response = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email, otp, type: "login", password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
         setError(data.message || "Failed to verify OTP");
+        setLoading(false);
         return;
       }
 
@@ -85,10 +128,17 @@ export default function LoginPage() {
       if (data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
-      setTimeout(() => router.push("/dashboard"), 1500);
+      
+      // Redirect based on user type
+      setTimeout(() => {
+        if (data.user?.user_type === "freelancer") {
+          router.push("/freelancer");
+        } else {
+          router.push("/client");
+        }
+      }, 1000);
     } catch (err: any) {
       setError(err.message || "An error occurred");
-    } finally {
       setLoading(false);
     }
   };
@@ -110,6 +160,46 @@ export default function LoginPage() {
           <p className="text-slate-400">Login to your account</p>
         </div>
 
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            {[
+              { key: "email", label: "Email" },
+              { key: "password", label: "Password" },
+              { key: "otp", label: "Verify" },
+            ].map((s, i) => {
+              const steps = ["email", "password", "otp"];
+              const currentIndex = steps.indexOf(step);
+              const isActive = i <= currentIndex;
+              return (
+                <div key={s.key} className="flex items-center">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                      isActive
+                        ? "bg-cyan-500 text-white"
+                        : "bg-slate-700 text-slate-500"
+                    }`}
+                  >
+                    {i + 1}
+                  </div>
+                  {i < 2 && (
+                    <div
+                      className={`w-20 h-1 mx-2 transition-all ${
+                        i < currentIndex ? "bg-cyan-500" : "bg-slate-700"
+                      }`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-center text-sm text-slate-400">
+            {step === "email" && "Step 1: Enter Email"}
+            {step === "password" && "Step 2: Enter Password"}
+            {step === "otp" && "Step 3: Verify OTP"}
+          </p>
+        </div>
+
         {/* Card */}
         <div className="bg-slate-800/50 backdrop-blur border border-slate-700/50 rounded-lg p-8">
           {/* Error */}
@@ -128,12 +218,11 @@ export default function LoginPage() {
             </div>
           )}
 
-          {step === "email" ? (
-            <form onSubmit={handleSendOTP} className="space-y-4">
+          {/* Step 1: Email */}
+          {step === "email" && (
+            <form onSubmit={handleCheckEmail} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Email Address
-                </label>
+                <Label className="text-slate-200 mb-2 block">Email Address</Label>
                 <Input
                   type="email"
                   placeholder="you@example.com"
@@ -151,22 +240,86 @@ export default function LoginPage() {
                 {loading ? (
                   <>
                     <Loader className="w-4 h-4 mr-2 animate-spin" />
-                    Sending...
+                    Checking...
+                  </>
+                ) : (
+                  "Continue"
+                )}
+              </Button>
+            </form>
+          )}
+
+          {/* Step 2: Password */}
+          {step === "password" && (
+            <form onSubmit={handleSendOTP} className="space-y-4">
+              <div className="text-center mb-4">
+                <p className="text-slate-400 text-sm">
+                  Logging in as <strong className="text-white">{email}</strong>
+                </p>
+              </div>
+              
+              <div>
+                <Label className="text-slate-200 mb-2 block">Password</Label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              
+              <Button
+                type="submit"
+                disabled={loading || !password}
+                className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold"
+              >
+                {loading ? (
+                  <>
+                    <Loader className="w-4 h-4 mr-2 animate-spin" />
+                    Sending OTP...
                   </>
                 ) : (
                   "Send OTP"
                 )}
               </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setStep("email");
+                  setPassword("");
+                  setSuccess("");
+                }}
+                className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
+              >
+                Back
+              </Button>
             </form>
-          ) : (
+          )}
+
+          {/* Step 3: OTP */}
+          {step === "otp" && (
             <form onSubmit={handleVerifyOTP} className="space-y-4">
-              <div>
-                <p className="text-sm text-slate-400 mb-4">
-                  Enter the 6-digit code sent to <strong>{email}</strong>
+              <div className="text-center mb-4">
+                <p className="text-slate-400 text-sm">
+                  Enter the 6-digit code sent to <strong className="text-white">{email}</strong>
                 </p>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Verification Code
-                </label>
+              </div>
+              
+              <div>
+                <Label className="text-slate-200 mb-2 block">Verification Code</Label>
                 <Input
                   type="text"
                   placeholder="000000"
@@ -177,6 +330,7 @@ export default function LoginPage() {
                   className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-500 text-center text-2xl tracking-widest font-mono"
                 />
               </div>
+              
               <Button
                 type="submit"
                 disabled={loading || otp.length !== 6}
@@ -191,11 +345,12 @@ export default function LoginPage() {
                   "Verify & Login"
                 )}
               </Button>
+
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setStep("email");
+                  setStep("password");
                   setOtp("");
                   setSuccess("");
                 }}
@@ -254,8 +409,7 @@ export default function LoginPage() {
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(generatedOtp);
-                setSuccess("OTP copied to clipboard!");
-                setTimeout(() => setSuccess(""), 3000);
+                toast.success("OTP copied to clipboard!");
               }}
               variant="outline"
               className="w-full border-cyan-500 text-cyan-400 hover:bg-cyan-500/10"

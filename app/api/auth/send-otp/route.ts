@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateOTP, storeOTP } from '@/lib/otp';
 import { sendOTPEmail } from '@/lib/email';
 
-const VALID_TYPES = ['register', 'login', 'transfer', 'withdrawal'];
+const VALID_TYPES = ['register', 'login', 'transfer', 'withdrawal'] as const;
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, type } = await request.json();
+    const { email, type, metadata } = await request.json();
 
     if (!email) {
       return NextResponse.json(
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!type || !VALID_TYPES.includes(type)) {
+    if (!type || !VALID_TYPES.includes(type as any)) {
       return NextResponse.json(
         { error: 'Invalid request type. Must be one of: ' + VALID_TYPES.join(', ') },
         { status: 400 }
@@ -24,12 +24,12 @@ export async function POST(request: NextRequest) {
 
     // Generate OTP
     const otp = generateOTP(6);
-    storeOTP(email, otp, 900); // 15 minutes
+    storeOTP(email, otp, 900, type as any, metadata); // 15 minutes
 
     // Try to send email, but don't fail if email is not configured
     let emailSent = false;
     try {
-      await sendOTPEmail(email, otp);
+      await sendOTPEmail(email, otp, type);
       console.log(`[OTP] Sent to ${email} for ${type}`);
       emailSent = true;
     } catch (emailError) {
@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { 
-        success: true, 
+      {
+        success: true,
         message: `OTP for ${type} sent to your email`,
         otp: otp,
         emailSent

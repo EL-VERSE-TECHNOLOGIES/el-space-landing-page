@@ -1,5 +1,13 @@
 // In-memory store for OTPs (use Redis in production)
-const otpStore: Map<string, { code: string; expiresAt: number; attempts: number }> = new Map();
+interface OTPData {
+  code: string;
+  expiresAt: number;
+  attempts: number;
+  type: 'register' | 'login' | 'transfer' | 'withdrawal';
+  metadata?: Record<string, any>;
+}
+
+const otpStore: Map<string, OTPData> = new Map();
 
 export function generateOTP(length: number = 6): string {
   return Math.floor(Math.random() * Math.pow(10, length))
@@ -7,15 +15,23 @@ export function generateOTP(length: number = 6): string {
     .padStart(length, '0');
 }
 
-export function storeOTP(email: string, otp: string, expirySeconds: number = 900): void {
+export function storeOTP(
+  email: string,
+  otp: string,
+  expirySeconds: number = 900,
+  type: 'register' | 'login' | 'transfer' | 'withdrawal' = 'login',
+  metadata?: Record<string, any>
+): void {
   otpStore.set(email, {
     code: otp,
     expiresAt: Date.now() + expirySeconds * 1000,
     attempts: 0,
+    type,
+    metadata,
   });
 }
 
-export function verifyOTP(email: string, otp: string): { valid: boolean; message: string } {
+export function verifyOTP(email: string, otp: string): { valid: boolean; message: string; type?: string; metadata?: Record<string, any> } {
   const storedOTP = otpStore.get(email);
 
   if (!storedOTP) {
@@ -37,9 +53,18 @@ export function verifyOTP(email: string, otp: string): { valid: boolean; message
     return { valid: false, message: `Invalid OTP. ${5 - storedOTP.attempts} attempts remaining.` };
   }
 
-  // OTP is valid, delete it
+  // OTP is valid - don't delete yet, let the caller decide when to delete
+  const result = {
+    valid: true,
+    message: 'OTP verified successfully.',
+    type: storedOTP.type,
+    metadata: storedOTP.metadata,
+  };
+
+  // Delete the OTP after successful verification
   otpStore.delete(email);
-  return { valid: true, message: 'OTP verified successfully.' };
+
+  return result;
 }
 
 export function deleteOTP(email: string): void {
@@ -49,4 +74,9 @@ export function deleteOTP(email: string): void {
 export function getOTPAttempts(email: string): number {
   const storedOTP = otpStore.get(email);
   return storedOTP ? storedOTP.attempts : 0;
+}
+
+export function getOTPType(email: string): string | undefined {
+  const storedOTP = otpStore.get(email);
+  return storedOTP?.type;
 }

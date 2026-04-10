@@ -197,6 +197,32 @@ export const updateProjectStatus = async (projectId: string, status: string) => 
   return { data: data?.[0], error };
 };
 
+export const createClientProfile = async (userId: string, profileData: any) => {
+  const { data, error } = await supabase
+    .from('client_profiles')
+    .insert([{ ...profileData, user_id: userId }])
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const getClientProfile = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('client_profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+  return { data, error };
+};
+
+export const updateClientProfile = async (userId: string, updates: any) => {
+  const { data, error } = await supabase
+    .from('client_profiles')
+    .update({ ...updates, updated_at: new Date() })
+    .eq('user_id', userId)
+    .select();
+  return { data: data?.[0], error };
+};
+
 // ============ FREELANCER PROFILES ============
 
 export const createFreelancerProfile = async (userId: string, profileData: any) => {

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -18,39 +20,84 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { INDUSTRIES, TECH_STACKS, COMPANY_SIZES, BUSINESS_TYPES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
-import { AlertCircle, CheckCircle, Loader, Mail } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader, Mail, Upload, Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [step, setStep] = useState<"info" | "otp">("info");
+  
+  // Step management: info -> details -> otp -> complete
+  const [step, setStep] = useState<"info" | "details" | "otp">("info");
+  
+  // Common fields
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [userType, setUserType] = useState<"" | "client" | "freelancer">("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  
+  // Client fields
+  const [companyName, setCompanyName] = useState("");
+  const [businessType, setBusinessType] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [companySize, setCompanySize] = useState("");
+  const [companyLogo, setCompanyLogo] = useState<File | null>(null);
+  const [companyLogoPreview, setCompanyLogoPreview] = useState<string>("");
+  
+  // Freelancer fields
+  const [techStack, setTechStack] = useState<string[]>([]);
+  const [techStackSearch, setTechStackSearch] = useState("");
+  const [aboutYou, setAboutYou] = useState("");
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState<string>("");
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  
+  // Phone
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+1");
+  
+  // OTP
   const [otp, setOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
+  const [showOtpPopup, setShowOtpPopup] = useState(false);
+  
+  // State
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState("");
-  const [showOtpPopup, setShowOtpPopup] = useState(false);
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
 
-    if (!email || !name || !userType) {
-      setError("Please fill in all fields");
-      setLoading(false);
+    // Validation
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch("/api/auth/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, type: "register" }),
+        body: JSON.stringify({ 
+          email, 
+          type: "register",
+          metadata: { name, userType }
+        }),
       });
 
       const data = await response.json();
@@ -61,7 +108,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // Show OTP in popup modal
       if (data.otp) {
         setGeneratedOtp(data.otp);
         setShowOtpPopup(true);
@@ -86,44 +132,127 @@ export default function RegisterPage() {
       const verifyResponse = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email, otp, type: "register" }),
       });
 
       const verifyData = await verifyResponse.json();
 
       if (!verifyResponse.ok) {
         setError(verifyData.message || "Failed to verify OTP");
+        setLoading(false);
         return;
+      }
+
+      // Prepare registration data
+      const registerData: any = {
+        email,
+        name,
+        userType,
+        password,
+        phoneNumber,
+        countryCode,
+      };
+
+      // Add client-specific fields
+      if (userType === "client") {
+        registerData.companyName = companyName || name;
+        registerData.businessType = businessType;
+        registerData.industry = industry;
+        registerData.companySize = companySize;
+        if (companyLogoPreview) {
+          registerData.companyLogo = companyLogoPreview;
+        }
+      }
+
+      // Add freelancer-specific fields
+      if (userType === "freelancer") {
+        registerData.techStack = techStack;
+        registerData.aboutYou = aboutYou;
+        if (profilePicturePreview) {
+          registerData.profilePicture = profilePicturePreview;
+        }
+        if (cvFile) {
+          // In production, upload to storage and get URL
+          registerData.cvUrl = URL.createObjectURL(cvFile);
+        }
       }
 
       // Register user
       const registerResponse = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, userType }),
+        body: JSON.stringify(registerData),
       });
 
-      const registerData = await registerResponse.json();
+      const registerData_response = await registerResponse.json();
 
       if (!registerResponse.ok) {
-        setError(registerData.error || "Failed to register");
+        setError(registerData_response.error || "Failed to register");
+        setLoading(false);
         return;
       }
 
-      setSuccess("Registration successful! Welcome to EL SPACE!");
+      // Store auth
       localStorage.setItem("authToken", verifyData.token);
-      localStorage.setItem("user", JSON.stringify(registerData.user));
-      setTimeout(() => router.push("/dashboard"), 1500);
+      localStorage.setItem("user", JSON.stringify({
+        ...registerData_response.user,
+        userType: registerData_response.userType,
+      }));
+
+      setSuccess("Registration successful! Redirecting to dashboard...");
+      
+      // Redirect based on user type
+      setTimeout(() => {
+        if (userType === "freelancer") {
+          router.push("/freelancer");
+        } else {
+          router.push("/client");
+        }
+      }, 1500);
     } catch (err: any) {
       setError(err.message || "An error occurred");
-    } finally {
       setLoading(false);
     }
   };
 
+  const handleFileUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<File | null>>,
+    previewSetter: React.Dispatch<React.SetStateAction<string>>,
+    accept: string
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.match(accept) && accept === "image/*") {
+        toast.error("Please upload an image file");
+        return;
+      }
+      setter(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        previewSetter(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const toggleTechStack = (tech: string) => {
+    if (techStack.includes(tech)) {
+      setTechStack(techStack.filter((t) => t !== tech));
+    } else if (techStack.length < 15) {
+      setTechStack([...techStack, tech]);
+    } else {
+      toast.error("Maximum 15 tech stacks allowed");
+    }
+  };
+
+  const filteredTechStacks = TECH_STACKS.filter((tech) =>
+    tech.toLowerCase().includes(techStackSearch.toLowerCase())
+  ).slice(0, 20);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="relative h-12 w-48 mb-2">
@@ -135,7 +264,45 @@ export default function RegisterPage() {
               priority
             />
           </div>
-          <p className="text-slate-400">Join the marketplace</p>
+          <p className="text-slate-400">Create your account</p>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            {["info", "details", "otp"].map((s, i) => {
+              const steps = ["info", "details", "otp"];
+              const currentIndex = steps.indexOf(step);
+              const isActive = i <= currentIndex;
+              return (
+                <div key={s} className="flex items-center">
+                  <div
+                    className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all",
+                      isActive
+                        ? "bg-cyan-500 text-white"
+                        : "bg-slate-700 text-slate-500"
+                    )}
+                  >
+                    {i + 1}
+                  </div>
+                  {i < 2 && (
+                    <div
+                      className={cn(
+                        "w-20 h-1 mx-2 transition-all",
+                        i < currentIndex ? "bg-cyan-500" : "bg-slate-700"
+                      )}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-center text-sm text-slate-400">
+            {step === "info" && "Step 1: Basic Information"}
+            {step === "details" && `Step 2: ${userType === "client" ? "Company" : "Professional"} Details`}
+            {step === "otp" && "Step 3: Verify Email"}
+          </p>
         </div>
 
         {/* Card */}
@@ -156,12 +323,11 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {step === "info" ? (
-            <form onSubmit={handleSendOTP} className="space-y-4">
+          {/* Step 1: Basic Info */}
+          {step === "info" && (
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Full Name
-                </label>
+                <Label className="text-slate-200 mb-2 block">Full Name *</Label>
                 <Input
                   type="text"
                   placeholder="John Doe"
@@ -173,9 +339,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Email Address
-                </label>
+                <Label className="text-slate-200 mb-2 block">Email Address *</Label>
                 <Input
                   type="email"
                   placeholder="you@example.com"
@@ -187,9 +351,43 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  I am a...
-                </label>
+                <Label className="text-slate-200 mb-2 block">Password *</Label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Min. 8 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-slate-200 mb-2 block">Confirm Password *</Label>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Re-enter password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-500"
+                />
+                {password && confirmPassword && password !== confirmPassword && (
+                  <p className="text-red-400 text-xs mt-1">Passwords do not match</p>
+                )}
+              </div>
+
+              <div>
+                <Label className="text-slate-200 mb-2 block">I am a... *</Label>
                 <Select value={userType} onValueChange={(val: any) => setUserType(val)}>
                   <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white h-10">
                     <SelectValue placeholder="Select your role" />
@@ -209,37 +407,292 @@ export default function RegisterPage() {
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-slate-400 mt-2">Choose your role to get started</p>
               </div>
 
               <Button
-                type="submit"
-                disabled={loading || !email || !name || !userType}
+                type="button"
+                onClick={() => {
+                  if (!name || !email || !userType || !password) {
+                    setError("Please fill in all required fields");
+                    return;
+                  }
+                  if (password !== confirmPassword) {
+                    setError("Passwords do not match");
+                    return;
+                  }
+                  if (password.length < 8) {
+                    setError("Password must be at least 8 characters");
+                    return;
+                  }
+                  setError("");
+                  setStep("details");
+                }}
                 className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold"
               >
-                {loading ? (
-                  <>
-                    <Loader className="w-4 h-4 mr-2 animate-spin" />
-                    Sending OTP...
-                  </>
-                ) : (
-                  "Continue"
-                )}
+                <ArrowRight className="w-4 h-4 mr-2" />
+                Next: {userType === "client" ? "Company" : "Professional"} Details
               </Button>
 
               <p className="text-xs text-slate-400 text-center">
                 By registering, you agree to our Terms of Service and Privacy Policy
               </p>
-            </form>
-          ) : (
+            </div>
+          )}
+
+          {/* Step 2: Details */}
+          {step === "details" && (
+            <div className="space-y-4">
+              {/* Phone Number (Common) */}
+              <div>
+                <Label className="text-slate-200 mb-2 block">Phone Number</Label>
+                <PhoneInput
+                  value={phoneNumber}
+                  countryCode={countryCode}
+                  onPhoneChange={setPhoneNumber}
+                  onCountryCodeChange={setCountryCode}
+                />
+              </div>
+
+              {/* Client Fields */}
+              {userType === "client" && (
+                <>
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">Company Name *</Label>
+                    <Input
+                      type="text"
+                      placeholder="Acme Corp"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-500"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">Business Type</Label>
+                    <Select value={businessType} onValueChange={setBusinessType}>
+                      <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white h-10">
+                        <SelectValue placeholder="Select business type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-600 text-white">
+                        {BUSINESS_TYPES.map((type) => (
+                          <SelectItem key={type} value={type} className="text-white focus:bg-slate-700">
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">Industry *</Label>
+                    <Select value={industry} onValueChange={setIndustry}>
+                      <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white h-10">
+                        <SelectValue placeholder="Select industry" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-600 text-white max-h-[300px]">
+                        {INDUSTRIES.map((ind) => (
+                          <SelectItem key={ind} value={ind} className="text-white focus:bg-slate-700">
+                            {ind}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">Company Size</Label>
+                    <Select value={companySize} onValueChange={setCompanySize}>
+                      <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white h-10">
+                        <SelectValue placeholder="Select company size" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-800 border-slate-600 text-white">
+                        {COMPANY_SIZES.map((size) => (
+                          <SelectItem key={size} value={size} className="text-white focus:bg-slate-700">
+                            {size}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">Company Logo (Optional)</Label>
+                    <div className="flex items-center gap-4">
+                      {companyLogoPreview && (
+                        <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-slate-600">
+                          <Image src={companyLogoPreview} alt="Logo preview" fill className="object-cover" />
+                        </div>
+                      )}
+                      <label className="flex-1 cursor-pointer">
+                        <div className="border-2 border-dashed border-slate-600 rounded-lg p-4 text-center hover:border-slate-500 transition-colors">
+                          <Upload className="w-6 h-6 mx-auto mb-2 text-slate-400" />
+                          <p className="text-xs text-slate-400">Click to upload logo</p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, setCompanyLogo, setCompanyLogoPreview, "image/*")}
+                            className="hidden"
+                          />
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Freelancer Fields */}
+              {userType === "freelancer" && (
+                <>
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">Tech Stack * (Select up to 15)</Label>
+                    <Input
+                      type="text"
+                      placeholder="Search tech stacks..."
+                      value={techStackSearch}
+                      onChange={(e) => setTechStackSearch(e.target.value)}
+                      className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-500 mb-2"
+                    />
+                    <div className="max-h-[200px] overflow-y-auto space-y-1 bg-slate-700/30 rounded-lg p-2">
+                      {filteredTechStacks.map((tech) => (
+                        <button
+                          key={tech}
+                          type="button"
+                          onClick={() => toggleTechStack(tech)}
+                          className={cn(
+                            "w-full text-left px-3 py-2 rounded-md text-sm transition-colors",
+                            techStack.includes(tech)
+                              ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/50"
+                              : "bg-slate-700/50 text-slate-300 hover:bg-slate-700"
+                          )}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>{tech}</span>
+                            {techStack.includes(tech) && <CheckCircle className="w-4 h-4" />}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    {techStack.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {techStack.map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-2 py-1 bg-cyan-500/20 text-cyan-400 text-xs rounded-full border border-cyan-500/50"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-slate-400 mt-1">{techStack.length}/15 selected</p>
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">About You *</Label>
+                    <Textarea
+                      placeholder="Tell clients about your experience, skills, and what makes you stand out..."
+                      value={aboutYou}
+                      onChange={(e) => setAboutYou(e.target.value)}
+                      rows={4}
+                      className="bg-slate-700/50 border-slate-600 text-white placeholder-slate-500"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">Profile Picture (Optional)</Label>
+                    <div className="flex items-center gap-4">
+                      {profilePicturePreview && (
+                        <div className="relative w-16 h-16 rounded-full overflow-hidden border border-slate-600">
+                          <Image src={profilePicturePreview} alt="Profile preview" fill className="object-cover" />
+                        </div>
+                      )}
+                      <label className="flex-1 cursor-pointer">
+                        <div className="border-2 border-dashed border-slate-600 rounded-lg p-4 text-center hover:border-slate-500 transition-colors">
+                          <Upload className="w-6 h-6 mx-auto mb-2 text-slate-400" />
+                          <p className="text-xs text-slate-400">Click to upload photo</p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, setProfilePicture, setProfilePicturePreview, "image/*")}
+                            className="hidden"
+                          />
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-200 mb-2 block">CV/Resume Upload (Optional)</Label>
+                    <label className="cursor-pointer block">
+                      <div className="border-2 border-dashed border-slate-600 rounded-lg p-4 text-center hover:border-slate-500 transition-colors">
+                        <Upload className="w-6 h-6 mx-auto mb-2 text-slate-400" />
+                        <p className="text-sm text-slate-300">
+                          {cvFile ? cvFile.name : "Click to upload CV/Resume"}
+                        </p>
+                        <p className="text-xs text-slate-400">PDF, DOC, DOCX (Max 5MB)</p>
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              if (file.size > 5 * 1024 * 1024) {
+                                toast.error("File size must be less than 5MB");
+                                return;
+                              }
+                              setCvFile(file);
+                            }
+                          }}
+                          className="hidden"
+                        />
+                      </div>
+                    </label>
+                  </div>
+                </>
+              )}
+
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setStep("info")}
+                  className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    // Validate required fields
+                    if (userType === "client" && !industry) {
+                      setError("Please select your industry");
+                      return;
+                    }
+                    if (userType === "freelancer" && (!techStack.length || !aboutYou)) {
+                      setError("Please select tech stack and write about yourself");
+                      return;
+                    }
+                    setError("");
+                    setStep("otp");
+                  }}
+                  className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold"
+                >
+                  Next: Verify Email
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: OTP Verification */}
+          {step === "otp" && (
             <form onSubmit={handleVerifyAndRegister} className="space-y-4">
               <div>
                 <p className="text-sm text-slate-400 mb-4">
                   Enter the 6-digit code sent to <strong>{email}</strong>
                 </p>
-                <label className="block text-sm font-medium text-slate-200 mb-2">
-                  Verification Code
-                </label>
+                <Label className="text-slate-200 mb-2 block">Verification Code</Label>
                 <Input
                   type="text"
                   placeholder="000000"
@@ -270,7 +723,7 @@ export default function RegisterPage() {
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setStep("info");
+                  setStep("details");
                   setOtp("");
                   setSuccess("");
                 }}
@@ -329,8 +782,7 @@ export default function RegisterPage() {
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(generatedOtp);
-                setSuccess("OTP copied to clipboard!");
-                setTimeout(() => setSuccess(""), 3000);
+                toast.success("OTP copied to clipboard!");
               }}
               variant="outline"
               className="w-full border-cyan-500 text-cyan-400 hover:bg-cyan-500/10"
