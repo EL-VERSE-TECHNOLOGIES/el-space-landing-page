@@ -489,3 +489,174 @@ export const getSavedFreelancers = async (clientId: string) => {
     .eq('client_id', clientId);
   return { data, error };
 };
+
+// ============ DISPUTES & RESOLUTION ============
+
+export const createDispute = async (disputeData: any) => {
+  const { data, error } = await supabase
+    .from('disputes')
+    .insert([{ 
+      ...disputeData, 
+      status: 'open',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }])
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const getDisputesByProject = async (projectId: string) => {
+  const { data, error } = await supabase
+    .from('disputes')
+    .select('*')
+    .eq('project_id', projectId)
+    .order('created_at', { ascending: false });
+  return { data, error };
+};
+
+export const getDisputesByUser = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('disputes')
+    .select('*')
+    .or(`plaintiff_id.eq.${userId},defendant_id.eq.${userId}`)
+    .order('created_at', { ascending: false });
+  return { data, error };
+};
+
+export const getDispute = async (disputeId: string) => {
+  const { data, error } = await supabase
+    .from('disputes')
+    .select('*')
+    .eq('id', disputeId)
+    .single();
+  return { data, error };
+};
+
+export const updateDisputeStatus = async (disputeId: string, status: string, resolution?: string) => {
+  const updateData: any = { 
+    status,
+    updated_at: new Date().toISOString()
+  };
+  
+  if (resolution) {
+    updateData.resolution = resolution;
+    updateData.resolved_at = new Date().toISOString();
+  }
+
+  const { data, error } = await supabase
+    .from('disputes')
+    .update(updateData)
+    .eq('id', disputeId)
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const addDisputeEvidence = async (disputeId: string, userId: string, evidence: string, attachmentUrl?: string) => {
+  const { data, error } = await supabase
+    .from('dispute_evidence')
+    .insert([{
+      dispute_id: disputeId,
+      user_id: userId,
+      evidence,
+      attachment_url: attachmentUrl,
+      created_at: new Date().toISOString()
+    }])
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const getDisputeEvidence = async (disputeId: string) => {
+  const { data, error } = await supabase
+    .from('dispute_evidence')
+    .select('*')
+    .eq('dispute_id', disputeId)
+    .order('created_at', { ascending: true });
+  return { data, error };
+};
+
+export const createMediationSession = async (disputeId: string, mediatorId: string) => {
+  const { data, error } = await supabase
+    .from('mediation_sessions')
+    .insert([{
+      dispute_id: disputeId,
+      mediator_id: mediatorId,
+      status: 'scheduled',
+      created_at: new Date().toISOString()
+    }])
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const getMediationSession = async (sessionId: string) => {
+  const { data, error } = await supabase
+    .from('mediation_sessions')
+    .select('*')
+    .eq('id', sessionId)
+    .single();
+  return { data, error };
+};
+
+export const updateMediationSession = async (sessionId: string, updates: any) => {
+  const { data, error } = await supabase
+    .from('mediation_sessions')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', sessionId)
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const recordMediationOutcome = async (disputeId: string, outcome: any) => {
+  const { data, error } = await supabase
+    .from('mediation_outcomes')
+    .insert([{
+      dispute_id: disputeId,
+      ...outcome,
+      created_at: new Date().toISOString()
+    }])
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const getMediationOutcome = async (disputeId: string) => {
+  const { data, error } = await supabase
+    .from('mediation_outcomes')
+    .select('*')
+    .eq('dispute_id', disputeId)
+    .single();
+  return { data, error };
+};
+
+export const escalateDispute = async (disputeId: string, escalationReason: string) => {
+  const { data, error } = await supabase
+    .from('disputes')
+    .update({
+      status: 'escalated',
+      escalation_reason: escalationReason,
+      escalated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', disputeId)
+    .select();
+  return { data: data?.[0], error };
+};
+
+export const resolveDispute = async (
+  disputeId: string,
+  resolution: string,
+  compensationAmount?: number,
+  compensationTo?: string
+) => {
+  const { data, error } = await supabase
+    .from('disputes')
+    .update({
+      status: 'resolved',
+      resolution,
+      compensation_amount: compensationAmount,
+      compensation_to: compensationTo,
+      resolved_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', disputeId)
+    .select();
+  return { data: data?.[0], error };
+};
