@@ -9,22 +9,45 @@ export interface Bank {
 
 export const BANKS_BY_COUNTRY: Record<CountryCode, Bank[]> = {
   NG: [
+    // Tier 1 Banks
     { code: '044', name: 'Access Bank Nigeria', currency: 'NGN' },
     { code: '050', name: 'Guaranty Trust Bank (GTBank)', currency: 'NGN' },
-    { code: '011', name: 'First City Monument Bank', currency: 'NGN' },
+    { code: '011', name: 'First City Monument Bank (FCMB)', currency: 'NGN' },
     { code: '012', name: 'Union Bank of Nigeria', currency: 'NGN' },
     { code: '214', name: 'Zenith Bank', currency: 'NGN' },
-    { code: '058', name: 'Guaranty Trust Bank', currency: 'NGN' },
-    { code: '023', name: 'Bank of Industry', currency: 'NGN' },
-    { code: '999', name: 'Fidelity Bank', currency: 'NGN' },
+    { code: '058', name: 'Guaranty Trust Bank Mobile', currency: 'NGN' },
     { code: '070', name: 'Fidelity Bank Nigeria', currency: 'NGN' },
-    { code: '068', name: 'Standard Chartered Bank', currency: 'NGN' },
-    { code: '035', name: 'Wema Bank', currency: 'NGN' },
+    { code: '063', name: 'United Bank For Africa (UBA)', currency: 'NGN' },
+    { code: '304', name: 'Stanbic IBTC Bank', currency: 'NGN' },
     { code: '084', name: 'Ecobank Nigeria', currency: 'NGN' },
-    { code: '063', name: 'United Bank For Africa', currency: 'NGN' },
+    
+    // Other Commercial Banks
+    { code: '023', name: 'Bank of Industry', currency: 'NGN' },
+    { code: '035', name: 'Wema Bank', currency: 'NGN' },
+    { code: '068', name: 'Standard Chartered Bank Nigeria', currency: 'NGN' },
     { code: '076', name: 'Skye Bank (Polaris)', currency: 'NGN' },
     { code: '065', name: 'Keystone Bank Nigeria', currency: 'NGN' },
-    { code: '304', name: 'Stanbic IBTC Bank', currency: 'NGN' },
+    { code: '999', name: 'Fidelity Bank', currency: 'NGN' },
+    
+    // Microfinance and Fintech Banks
+    { code: '540', name: 'OPay', currency: 'NGN' },
+    { code: '501', name: 'Palmpay (Sterling Bank)', currency: 'NGN' },
+    { code: '990', name: 'Kuda MFB', currency: 'NGN' },
+    { code: '966', name: 'Carbon (formerly Paylend)', currency: 'NGN' },
+    { code: '960', name: 'Sparkle MFB', currency: 'NGN' },
+    { code: '526', name: 'Moniepoint MFB', currency: 'NGN' },
+    { code: '618', name: 'Standard Chartered MFB', currency: 'NGN' },
+    { code: '101', name: 'Providus Bank', currency: 'NGN' },
+    { code: '100', name: 'Suntrust Bank Nigeria', currency: 'NGN' },
+    
+    // Additional Banks
+    { code: '403', name: 'JAIZ Bank', currency: 'NGN' },
+    { code: '102', name: 'Vanguard Bank', currency: 'NGN' },
+    { code: '058', name: 'Gtco (GTBank)', currency: 'NGN' },
+    { code: '039', name: 'Infinity Bank', currency: 'NGN' },
+    { code: '809', name: 'Village Financial Services', currency: 'NGN' },
+    { code: '038', name: 'Heritage Bank', currency: 'NGN' },
+    { code: '037', name: 'Zenith Bank Alt Code', currency: 'NGN' },
   ],
   GH: [
     { code: '010050', name: 'Ecobank Ghana', currency: 'GHS' },
