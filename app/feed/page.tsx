@@ -148,7 +148,7 @@ export default function FeedPage() {
           {userType === 'client' ? (
             <>
               <TabsContent value="discover" className="space-y-4">
-                {mockFreelancers.map((freelancer) => (
+                {freelancers.map((freelancer) => (
                   <div
                     key={freelancer.id}
                     className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-colors"
@@ -225,7 +225,7 @@ export default function FeedPage() {
           ) : (
             <>
               <TabsContent value="discover" className="space-y-4">
-                {mockProjects.map((project) => (
+                {projects.map((project) => (
                   <div
                     key={project.id}
                     className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-colors"
