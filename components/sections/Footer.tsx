@@ -104,10 +104,18 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border pt-8">
-          <p className="text-center text-sm text-muted-foreground">
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-center md:text-left text-sm text-muted-foreground">
             © 2026 EL VERSE TECHNOLOGIES. Freelance Without Friction.
           </p>
+          <div className="flex gap-4 items-center">
+            <Link 
+              href="/admin" 
+              className="text-xs text-muted-foreground hover:text-accent transition-colors opacity-30 hover:opacity-100"
+            >
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -64,7 +64,8 @@ export default function DisputesPage() {
     try {
       setLoading(true)
       showLoader(2)
-      const userId = localStorage.getItem('userId') || 'user-123'
+      const userId = localStorage.getItem('userId') || ''
+      if (!userId) return
 
       const response = await fetch(`/api/disputes?userId=${userId}`)
       const data = await response.json()

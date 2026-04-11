@@ -40,11 +40,12 @@ export default function PostJobPage() {
     setLoading(true);
 
     try {
+      const userId = localStorage.getItem('userId') || ''
       const response = await fetch('/api/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          clientId: 'user-123', // TODO: Get from auth context
+          clientId: userId, // Updated from hardcoded user-123
           title: formData.title,
           description: formData.description,
           category: formData.category,

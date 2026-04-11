@@ -288,9 +288,9 @@ export default function FreelancersPage() {
 
         {/* CTA Section */}
         <section className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-lg p-12 text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-4">Can't Find What You're Looking For?</h2>
+          <h2 className="text-3xl font-bold text-white mb-4">Can&apos;t Find What You&apos;re Looking For?</h2>
           <p className="text-slate-400 mb-8">
-            Post your project and let freelancers apply. You'll find the perfect match in no time.
+            Post your project and let freelancers apply. You&apos;ll find the perfect match in no time.
           </p>
           <Link
             href="/jobs/post"

@@ -234,47 +234,12 @@ export default function WalletPage() {
       return
     }
 
-    try {
-      showLoader(2)
-      const userId = localStorage.getItem('userId') || ''
-      const email = localStorage.getItem('email') || ''
-      const fullName = localStorage.getItem('fullName') || ''
-
-      if (!userId || !email) {
-        toast.error('User information not found. Please log in again.')
-        return
-      }
-
-      const response = await fetch('/api/payments/korapay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'initialize',
-          userId,
-          amount: parseFloat(fundAmount),
-          currency: 'USD',
-          email,
-          fullName,
-          type: 'wallet_funding',
-        }),
-      })
-
-      const data = await response.json()
-
-      if (data.success && data.authorization_url) {
-        toast.success('Redirecting to payment checkout...')
-        setTimeout(() => {
-          window.location.href = data.authorization_url
-        }, 1500)
-      } else {
-        toast.error(data.error || 'Failed to initialize payment')
-        hideLoader()
-      }
-    } catch (error) {
-      console.error('Funding error:', error)
-      toast.error('Funding error')
-      hideLoader()
-    }
+    // Redirect to the provided checkout URL as instructed
+    const checkoutUrl = 'https://checkout.korapay.com/pay/VZBklOmLoiuRiu3'
+    toast.success('Redirecting to Korapay Checkout...')
+    setTimeout(() => {
+      window.location.href = checkoutUrl
+    }, 1500)
   }
 
   if (loading) {
@@ -377,21 +342,24 @@ export default function WalletPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm text-blue-300 space-y-2">
+                    <div className="flex gap-2 font-bold text-white mb-2">
+                      IMPORTANT: Follow these steps exactly
+                    </div>
                     <div className="flex gap-2">
                       <span className="font-bold text-blue-400 min-w-6">1.</span>
-                      <span>Enter the amount you want to fund below</span>
+                      <span>Enter the amount you want to fund below (e.g., 50.00)</span>
                     </div>
                     <div className="flex gap-2">
                       <span className="font-bold text-blue-400 min-w-6">2.</span>
-                      <span>On checkout, enter the Full Name and Email Address you used in the app</span>
+                      <span>On the checkout page, enter your <strong>Full Name</strong> and <strong>Email Address</strong> exactly as used in this app.</span>
                     </div>
                     <div className="flex gap-2">
                       <span className="font-bold text-blue-400 min-w-6">3.</span>
-                      <span>Enter the same amount as specified here</span>
+                      <span>Enter the <strong>EXACT same amount</strong> on the checkout page as you entered here.</span>
                     </div>
                     <div className="flex gap-2">
                       <span className="font-bold text-blue-400 min-w-6">4.</span>
-                      <span>Complete payment and you'll be redirected back</span>
+                      <span>Complete the payment to have your wallet funded automatically.</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -566,11 +534,10 @@ export default function WalletPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-slate-800 border-blue-500/20">
-                        {Object.entries(CRYPTO_CURRENCIES).map(([key, crypto]) => (
-                          <SelectItem key={key} value={key}>
-                            {crypto.name} ({crypto.symbol})
-                          </SelectItem>
-                        ))}
+                        <SelectItem value="USDT">Tether (USDT)</SelectItem>
+                        <SelectItem value="USDC">USD Coin (USDC)</SelectItem>
+                        <SelectItem value="SOL">Solana (SOL)</SelectItem>
+                        <SelectItem value="ZEC">Zcash (ZEC)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

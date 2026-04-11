@@ -62,11 +62,12 @@ export default function ProjectDetailPage() {
     }
 
     try {
+      const userId = localStorage.getItem('userId') || ''
       const response = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          freelancerId: 'user-123', // TODO: Get from auth
+          freelancerId: userId, // Updated from hardcoded user-123
           projectId: params.id,
           coverLetter: applyFormData.coverLetter,
           rate: parseFloat(applyFormData.proposedRate),
@@ -94,7 +95,7 @@ export default function ProjectDetailPage() {
         body: JSON.stringify({
           applicationId,
           status: 'accepted',
-          clientId: 'user-123', // TODO: Get from auth
+          clientId: localStorage.getItem('userId') || '', // Updated from hardcoded user-123
         }),
       });
 

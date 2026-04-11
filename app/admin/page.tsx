@@ -271,6 +271,10 @@ export default function AdminDashboard() {
               <FileText className="w-4 h-4" />
               Job Listings
             </TabsTrigger>
+            <TabsTrigger value="database" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              Complete Database
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -311,12 +315,24 @@ export default function AdminDashboard() {
                   {users.length > 0 ? (
                     users.map((user) => (
                       <div key={user.id} className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg border border-slate-600/50">
-                        <div>
-                          <p className="text-white font-medium">{user.full_name || user.email}</p>
-                          <p className="text-slate-400 text-sm">{user.email}</p>
-                          <p className="text-slate-500 text-xs mt-1">Joined: {new Date(user.created_at).toLocaleDateString()}</p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 flex-1">
+                          <div>
+                            <p className="text-white font-medium">{user.full_name || user.email}</p>
+                            <p className="text-slate-400 text-xs">{user.id}</p>
+                          </div>
+                          <div>
+                            <p className="text-slate-300 text-sm">Role: {user.role || 'N/A'}</p>
+                            <p className="text-slate-400 text-xs">{user.email}</p>
+                          </div>
+                          <div>
+                            <p className="text-slate-300 text-sm">Balance: ${user.balance || 0}</p>
+                            <p className="text-slate-400 text-xs">Verified: {user.is_verified ? 'Yes' : 'No'}</p>
+                          </div>
+                          <div>
+                            <p className="text-slate-500 text-xs">Joined: {new Date(user.created_at).toLocaleDateString()}</p>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 ml-4">
                           <Badge className={user.status === 'active' ? 'bg-green-600' : 'bg-red-600'}>
                             {user.status}
                           </Badge>
@@ -441,6 +457,77 @@ export default function AdminDashboard() {
                   ) : (
                     <p className="text-slate-400 text-center py-8">No jobs to review</p>
                   )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Database Tab */}
+          <TabsContent value="database" className="space-y-6">
+            <Card className="bg-slate-800/50 border-blue-500/20">
+              <CardHeader>
+                <CardTitle className="text-white">Full System Database</CardTitle>
+                <CardDescription className="text-blue-200">Raw view and management of all system records</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-6">
+                  {/* Summary Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-slate-300">
+                      <thead className="bg-slate-700/50 text-slate-200">
+                        <tr>
+                          <th className="px-4 py-3">Category</th>
+                          <th className="px-4 py-3">Total Records</th>
+                          <th className="px-4 py-3">Pending Action</th>
+                          <th className="px-4 py-3">Last Activity</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-700">
+                        <tr>
+                          <td className="px-4 py-4">Users & Roles</td>
+                          <td className="px-4 py-4">{stats.totalUsers}</td>
+                          <td className="px-4 py-4">3 Verification Requests</td>
+                          <td className="px-4 py-4">Today, 10:45 AM</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-4">Payments & Escrow</td>
+                          <td className="px-4 py-4">{payments.length}</td>
+                          <td className="px-4 py-4">{stats.pendingPayments} Pending Approvals</td>
+                          <td className="px-4 py-4">Today, 09:15 AM</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-4">Jobs & Contracts</td>
+                          <td className="px-4 py-4">{stats.totalJobListings}</td>
+                          <td className="px-4 py-4">{stats.pendingApprovals} New Listings</td>
+                          <td className="px-4 py-4">Yesterday, 04:30 PM</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-4">Milestones & Payouts</td>
+                          <td className="px-4 py-4">12 Active</td>
+                          <td className="px-4 py-4">5 Ready for Payout</td>
+                          <td className="px-4 py-4">Today, 11:20 AM</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-4">Disputes & Support</td>
+                          <td className="px-4 py-4">1 Open</td>
+                          <td className="px-4 py-4">1 Awaiting Mediation</td>
+                          <td className="px-4 py-4">2 days ago</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="flex gap-4 mt-4">
+                    <Button variant="outline" className="border-blue-500/30 text-blue-300">
+                      Export Full Database (JSON)
+                    </Button>
+                    <Button variant="outline" className="border-blue-500/30 text-blue-300">
+                      System Backup
+                    </Button>
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      Refresh All Data
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

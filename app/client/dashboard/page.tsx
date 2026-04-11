@@ -19,7 +19,9 @@ export default function ClientDashboardPage() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('/api/projects?clientId=user-123'); // TODO: Get from auth
+      const userId = localStorage.getItem('userId') || ''
+      if (!userId) return
+      const response = await fetch(`/api/projects?clientId=${userId}`);
       const data = await response.json();
       setProjects(data.projects || []);
     } catch (error) {

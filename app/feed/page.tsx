@@ -70,12 +70,6 @@ export default function FeedPage() {
       setLoading(false)
     }
   }
-      timeline: '2 weeks',
-      skills: ['Figma', 'User Research', 'Prototyping'],
-      postedBy: 'Creative Agency',
-      proposals: 8,
-    },
-  ]
 
   const toggleFavorite = (id: string) => {
     setFavorites(prev =>

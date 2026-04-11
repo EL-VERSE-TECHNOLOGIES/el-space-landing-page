@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-4">1. Introduction</h2>
             <p className="text-slate-300 mb-4">
-              EL SPACE ("Company", "we", "our", or "us") operates the EL SPACE website and mobile application (the "Service"). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
+              EL SPACE (&quot;Company&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) operates the EL SPACE website and mobile application (the &quot;Service&quot;). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
             </p>
           </section>
 
@@ -66,16 +66,16 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">5. "Do Not Track" Signals</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">5. &quot;Do Not Track&quot; Signals</h2>
             <p className="text-slate-300 mb-4">
-              Some browsers include a "Do Not Track" feature. Our Service does not recognize Do Not Track signals. However, you may disable certain tracking features through your browser settings or third-party tools.
+              Some browsers include a &quot;Do Not Track&quot; feature. Our Service does not recognize Do Not Track signals. However, you may disable certain tracking features through your browser settings or third-party tools.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">6. Children's Privacy</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">6. Children&apos;s Privacy</h2>
             <p className="text-slate-300 mb-4">
-              Our Service does not address anyone under the age of 18 ("Children"). We do not knowingly collect personally identifiable information from children under 18. If we become aware that we have collected personal data from children without verification of parental consent, we take steps to remove such information and terminate the child's account.
+              Our Service does not address anyone under the age of 18 (&quot;Children&quot;). We do not knowingly collect personally identifiable information from children under 18. If we become aware that we have collected personal data from children without verification of parental consent, we take steps to remove such information and terminate the child&apos;s account.
             </p>
           </section>
 
