@@ -682,3 +682,29 @@ export const resolveDispute = async (
     .select();
   return { data: data?.[0], error };
 };
+
+// ============ ADMIN HELPERS ============
+
+export const getAllUsers = async () => {
+  const { data } = await supabase
+    .from('users')
+    .select('*')
+    .order('created_at', { ascending: false });
+  return data || [];
+};
+
+export const getAllPayments = async () => {
+  const { data } = await supabase
+    .from('payments')
+    .select('*')
+    .order('created_at', { ascending: false });
+  return data || [];
+};
+
+export const getAllJobs = async () => {
+  const { data } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+  return data || [];
+};
