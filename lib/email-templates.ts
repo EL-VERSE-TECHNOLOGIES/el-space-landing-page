@@ -985,7 +985,7 @@ Good news. We've handpicked {{matchCount}} vetted freelancers for your project:
 
 ✅ Verified: {{verificationLevel}}
 ⭐ Rating: {{rating}}/5 ({{completedProjects}} projects)
-💰 Rate: ${{hourlyRate}}/hr
+💰 Rate: \${{hourlyRate}}/hr
 🛠️ Skills: {{skillsList}}
 📅 Availability: {{availability}}
 
@@ -1040,7 +1040,7 @@ This is NOT a bidding situation. The client is reviewing 3-5 handpicked freelanc
 📋 PROJECT DETAILS
 
 Title: {{projectTitle}}
-Budget: ${{budgetMin}} – ${{budgetMax}}
+Budget: \${{budgetMin}} – \${{budgetMax}}
 Timeline: {{timeline}}
 Client: {{clientCompany}} ({{clientIndustry}})
 Description: {{projectDescription}}
@@ -1090,10 +1090,10 @@ Freelancer: {{freelancerName}}
 
 💰 PAYMENT DETAILS
 
-Milestone Amount: ${{milestoneAmount}}
-EL SPACE Fee: ${{platformFee}}
+Milestone Amount: \${{milestoneAmount}}
+EL SPACE Fee: \${{platformFee}}
 Escrow Protection: Included
-Total Charged: ${{totalCharged}}
+Total Charged: \${{totalCharged}}
 
 Payment Method: {{paymentMethodLast4}}
 Transaction ID: {{transactionId}}
@@ -1102,7 +1102,7 @@ Transaction ID: {{transactionId}}
 
 🔒 YOUR FUNDS ARE SECURE
 
-The ${{milestoneAmount}} is held in escrow. Funds will ONLY be released when:
+The \${{milestoneAmount}} is held in escrow. Funds will ONLY be released when:
 
 1. Freelancer submits work
 2. You review and approve
@@ -1124,7 +1124,7 @@ You have full control. Request revisions or open a dispute if needed.
 
 Milestone 1: {{milestone1Description}}
 Due Date: {{milestone1DueDate}}
-Amount in Escrow: ${{milestoneAmount}}
+Amount in Escrow: \${{milestoneAmount}}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -1159,8 +1159,8 @@ You are now cleared to begin work.
 
 💰 MILESTONE DETAILS
 
-Amount: ${{milestoneAmount}}
-Your Earnings (after {{feePercentage}} fee): ${{yourEarnings}}
+Amount: \${{milestoneAmount}}
+Your Earnings (after {{feePercentage}} fee): \${{yourEarnings}}
 Status: Held in escrow – guaranteed upon approval
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1276,10 +1276,10 @@ Milestone: {{milestoneDescription}}
 
 💰 PAYMENT BREAKDOWN
 
-Milestone Amount: ${{milestoneAmount}}
-EL SPACE Fee ({{feePercentage}}): -${{platformFee}}
+Milestone Amount: \${{milestoneAmount}}
+EL SPACE Fee ({{feePercentage}}): -\${{platformFee}}
 ────────────────────────────────────────────
-Your Earnings: ${{yourEarnings}}
+Your Earnings: \${{yourEarnings}}
 
 Status: ✅ Deposited to your EL SPACE Wallet
 
@@ -1287,11 +1287,11 @@ Status: ✅ Deposited to your EL SPACE Wallet
 
 ⚡ WITHDRAW YOUR FUNDS
 
-Available Balance: ${{walletBalance}}
+Available Balance: \${{walletBalance}}
 
 Option 1: Instant Withdrawal
 • Receive funds in minutes
-• 5% fee (${{instantFeeAmount}})
+• 5% fee (\${{instantFeeAmount}})
 • {{instantWithdrawUrl}}
 
 Option 2: Standard Withdrawal
@@ -1303,12 +1303,12 @@ Option 2: Standard Withdrawal
 
 📊 PROJECT PROGRESS
 
-Milestone 1: ✅ Completed – ${{m1Amount}} earned
-Milestone 2: 🔄 In Progress – ${{m2Amount}} pending
-Milestone 3: ⏳ Not Started – ${{m3Amount}} pending
+Milestone 1: ✅ Completed – \${{m1Amount}} earned
+Milestone 2: 🔄 In Progress – \${{m2Amount}} pending
+Milestone 3: ⏳ Not Started – \${{m3Amount}} pending
 
-Total Earned: ${{earnedSoFar}}
-Remaining: ${{remainingValue}}
+Total Earned: \${{earnedSoFar}}
+Remaining: \${{remainingValue}}
 
 View Full Project: {{dashboardUrl}}
 
@@ -1322,9 +1322,9 @@ View Full Project: {{dashboardUrl}}
 
 📈 YOUR EARNINGS THIS MONTH
 
-Total Earned (MTD): ${{monthToDateEarnings}}
+Total Earned (MTD): \${{monthToDateEarnings}}
 Projects Completed (MTD): {{monthlyCompletedProjects}}
-Average Project Value: ${{averageProjectValue}}
+Average Project Value: \${{averageProjectValue}}
 
 View Earnings Dashboard: {{earningsUrl}}
 
@@ -1347,7 +1347,7 @@ Hi {{clientName}},
 Congratulations! All milestones for "{{projectTitle}}" have been completed.
 
 Freelancer: {{freelancerName}}
-Total Project Value: ${{totalProjectValue}}
+Total Project Value: \${{totalProjectValue}}
 Duration: {{projectDuration}} days
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1414,7 +1414,7 @@ All milestones approved. Final payment released to your wallet.
 
 📊 PROJECT SUMMARY
 
-Total Earned: ${{totalEarned}}
+Total Earned: \${{totalEarned}}
 Duration: {{projectDuration}} days
 Milestones: {{completedMilestones}}/{{totalMilestones}}
 Client Satisfaction: Pending review
@@ -1449,7 +1449,7 @@ Both reviews double-blind.
 
 Completed Projects: {{totalCompletedProjects}}
 Average Rating: {{averageRating}}/5
-Total Earned: ${{lifetimeEarned}}
+Total Earned: \${{lifetimeEarned}}
 Current Match Score: {{matchScore}}/100
 
 View Full Profile: {{profileUrl}}

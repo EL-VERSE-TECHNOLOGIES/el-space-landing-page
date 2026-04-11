@@ -349,8 +349,8 @@ Hi {{freelancerName}},
 
 Great work! {{clientName}} has approved and released payment for {{projectTitle}}.
 
-Amount: ${{milestoneAmount}}
-Your Earnings (after 5% fee): ${{yourEarnings}}
+Amount: \${{milestoneAmount}}
+Your Earnings (after 5% fee): \${{yourEarnings}}
 Available in your wallet
 
 Withdraw Options:
@@ -422,7 +422,7 @@ Hi {{freelancerName}},
 A client has been shown your profile for a new project!
 
 Project: "{{projectTitle}}"
-Budget: ${{budgetMin}} - ${{budgetMax}}
+Budget: \${{budgetMin}} - \${{budgetMax}}
 
 You don't need to take action now. We'll notify you if they want to interview.
     `.trim();

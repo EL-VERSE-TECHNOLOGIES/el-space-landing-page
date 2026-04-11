@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+'use client';
+import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/sections/Navbar'
 import { FeaturedTalent } from '@/components/sections/FeaturedTalent'
 import { Footer } from '@/components/sections/Footer'
