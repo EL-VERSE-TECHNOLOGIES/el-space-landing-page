@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Search, Send, Plus, MoreVertical, Clock } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface Conversation {
   id: string
@@ -82,10 +83,17 @@ export default function MessagesPage() {
     },
   ]
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (messageInput.trim()) {
-      console.log('Sending message:', messageInput)
-      setMessageInput('')
+      try {
+        console.log('Sending message:', messageInput)
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 300))
+        toast.success('Message sent successfully!')
+        setMessageInput('')
+      } catch (error) {
+        toast.error('Failed to send message')
+      }
     }
   }
 

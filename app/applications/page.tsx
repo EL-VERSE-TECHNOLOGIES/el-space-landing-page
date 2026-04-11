@@ -191,7 +191,7 @@ export default function ApplicationsPage() {
       description: 'Setup database and create REST API endpoints',
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       amount: 1500,
-      status: 'funded' as const,
+      status: 'in_progress' as const,
       deliverables: ['Database schema', 'API endpoints', 'Authentication system'],
     },
     {
