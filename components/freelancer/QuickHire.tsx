@@ -182,7 +182,7 @@ export function QuickHire({
                 <div>
                   <h3 className="text-white font-semibold mb-1">Ready to start?</h3>
                   <p className="text-slate-400 text-sm">
-                    Once you confirm, {freelancerName} will be hired immediately and we'll charge ${totalWithFees.toFixed(2)}
+                    Once you confirm, {freelancerName} will be hired immediately and we&apos;ll charge ${totalWithFees.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -191,7 +191,7 @@ export function QuickHire({
                 <div className="flex gap-2 text-sm">
                   <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-green-300 font-semibold">You're protected</p>
+                    <p className="text-green-300 font-semibold">You&apos;re protected</p>
                     <p className="text-green-200/80 text-xs">Money held in escrow until milestone completion</p>
                   </div>
                 </div>

@@ -61,7 +61,8 @@ export default function ReviewsPage() {
     try {
       setLoading(true)
       showLoader(2)
-      const userId = localStorage.getItem('userId') || 'user-123'
+      const userId = localStorage.getItem('userId') || ''
+      if (!userId) return
 
       const response = await fetch(`/api/reviews?userId=${userId}`)
       const data = await response.json()

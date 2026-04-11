@@ -15,7 +15,7 @@ export default function HowItWorksPage() {
             How EL SPACE Works
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Whether you're a client looking to hire top talent or a freelancer ready to earn, our platform makes it simple and secure.
+            Whether you&apos;re a client looking to hire top talent or a freelancer ready to earn, our platform makes it simple and secure.
           </p>
         </div>
 

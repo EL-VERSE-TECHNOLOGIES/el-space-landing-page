@@ -71,7 +71,8 @@ export default function PaymentsPage() {
     try {
       setLoading(true)
       showLoader(2)
-      const userId = localStorage.getItem('userId') || 'user-123'
+      const userId = localStorage.getItem('userId') || ''
+      if (!userId) return
 
       const response = await fetch(`/api/payments?userId=${userId}&action=history`)
       const data = await response.json()

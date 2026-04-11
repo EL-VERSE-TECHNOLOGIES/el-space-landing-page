@@ -92,7 +92,7 @@ export default function PricingPage() {
 
           {/* Additional Information */}
           <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-8 mb-12">
-            <h3 className="text-2xl font-bold text-white mb-6">What's Included?</h3>
+            <h3 className="text-2xl font-bold text-white mb-6">What&apos;s Included?</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>

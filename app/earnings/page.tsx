@@ -21,7 +21,9 @@ export default function EarningsPage() {
 
   const fetchEarnings = async () => {
     try {
-      const response = await fetch('/api/earnings?freelancerId=user-123'); // TODO: Get from auth
+      const userId = localStorage.getItem('userId') || ''
+      if (!userId) return
+      const response = await fetch(`/api/earnings?freelancerId=${userId}`);
       const data = await response.json();
       setEarnings(data.earnings || []);
       setStats(data.stats);
@@ -39,11 +41,12 @@ export default function EarningsPage() {
     }
 
     try {
+      const userId = localStorage.getItem('userId') || ''
       const response = await fetch('/api/earnings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          freelancerId: 'user-123',
+          freelancerId: userId,
           amount: parseFloat(withdrawalAmount),
           reason: 'Withdrawal request',
         }),

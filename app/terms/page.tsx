@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-4">1. Agreement to Terms</h2>
             <p className="text-slate-300 mb-4">
-              By accessing and using EL SPACE ("Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+              By accessing and using EL SPACE (&quot;Service&quot;), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
             </p>
           </section>
 
@@ -34,14 +34,14 @@ export default function TermsOfServicePage() {
               <li>Using the materials for any commercial purpose or for any public display</li>
               <li>Attempting to decompile or reverse engineer any software contained on the Service</li>
               <li>Removing any copyright or other proprietary notations from the materials</li>
-              <li>Transferring the materials to another person or "mirroring" the materials on any other server</li>
+              <li>Transferring the materials to another person or &quot;mirroring&quot; the materials on any other server</li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-4">3. Disclaimer</h2>
             <p className="text-slate-300 mb-4">
-              The materials on EL SPACE are provided on an 'as is' basis. EL SPACE makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+              The materials on EL SPACE are provided on an &apos;as is&apos; basis. EL SPACE makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
             </p>
           </section>
 
@@ -69,7 +69,7 @@ export default function TermsOfServicePage() {
           <section className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-4">6. Escrow and Payments</h2>
             <p className="text-slate-300 mb-4">
-              All project payments are held in escrow until the freelancer completes the work and the client approves it. EL SPACE charges commissions on freelancer earnings as outlined in our pricing structure. Payments are processed securely and in accordance with our payment processor's terms.
+              All project payments are held in escrow until the freelancer completes the work and the client approves it. EL SPACE charges commissions on freelancer earnings as outlined in our pricing structure. Payments are processed securely and in accordance with our payment processor&apos;s terms.
             </p>
           </section>
 

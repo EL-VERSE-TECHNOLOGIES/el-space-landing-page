@@ -310,10 +310,10 @@ export function ApplicationCard({
         <DialogContent className="bg-slate-800 border-slate-700 max-w-4xl h-[80vh]">
           <DialogHeader>
             <DialogTitle className="text-white">
-              {freelancer?.full_name}'s CV / Resume
+              {freelancer?.full_name}&apos;s CV / Resume
             </DialogTitle>
             <DialogDescription className="text-slate-400">
-              View the freelancer's professional document
+              View the freelancer&apos;s professional document
             </DialogDescription>
           </DialogHeader>
           
