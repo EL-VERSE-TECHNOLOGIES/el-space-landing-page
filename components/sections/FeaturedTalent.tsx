@@ -96,7 +96,7 @@ export function FeaturedTalent() {
               </div>
             ))
           ) : (
-             <div className="col-span-full text-center text-slate-400 py-12">
+             <div className="col-span-full text-center text-slate-100 py-12">
                No featured talent available at the moment.
              </div>
           )}

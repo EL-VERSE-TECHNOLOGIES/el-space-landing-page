@@ -566,7 +566,7 @@ export const PRICING_CLIENT_TABLE = [
   { 
     size: "Micro",
     range: "Under $500",
-    fee: "Free",
+    fee: "$10-25",
     example: "Small bug fixes, minimal changes"
   },
   { 

@@ -47,15 +47,15 @@ export function Hero() {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <Shield className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-slate-300">Vetted professionals with proven track records</p>
+                <p className="text-sm text-slate-100">Vetted professionals with proven track records</p>
               </div>
               <div className="flex items-start gap-3">
                 <Zap className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-slate-300">Fast turnaround and dedicated support</p>
+                <p className="text-sm text-slate-100">Fast turnaround and dedicated support</p>
               </div>
               <div className="flex items-start gap-3">
                 <TrendingUp className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-slate-300">Scale your projects with confidence</p>
+                <p className="text-sm text-slate-100">Scale your projects with confidence</p>
               </div>
             </div>
 
@@ -96,15 +96,15 @@ export function Hero() {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <Zap className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-slate-300">Choose projects that match your expertise</p>
+                <p className="text-sm text-slate-100">Choose projects that match your expertise</p>
               </div>
               <div className="flex items-start gap-3">
                 <Shield className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-slate-300">Secure payments and milestone protection</p>
+                <p className="text-sm text-slate-100">Secure payments and milestone protection</p>
               </div>
               <div className="flex items-start gap-3">
                 <TrendingUp className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-slate-300">Grow your skills and build your portfolio</p>
+                <p className="text-sm text-slate-100">Grow your skills and build your portfolio</p>
               </div>
             </div>
 
@@ -129,19 +129,19 @@ export function Hero() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 pt-12 border-t border-slate-700/50">
           <div className="text-center">
             <div className="text-3xl font-bold text-cyan-400 mb-2">10K+</div>
-            <p className="text-sm text-slate-400">Active Users</p>
+            <p className="text-sm text-slate-100">Active Users</p>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-cyan-400 mb-2">500+</div>
-            <p className="text-sm text-slate-400">Projects Completed</p>
+            <p className="text-sm text-slate-100">Projects Completed</p>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-amber-400 mb-2">$2M+</div>
-            <p className="text-sm text-slate-400">Total Payments</p>
+            <p className="text-sm text-slate-100">Total Payments</p>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-green-400 mb-2">98%</div>
-            <p className="text-sm text-slate-400">Satisfaction Rate</p>
+            <p className="text-sm text-slate-100">Satisfaction Rate</p>
           </div>
         </div>
       </div>
