@@ -45,7 +45,7 @@ export function AdminLoginDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="text-xs text-muted-foreground hover:text-accent transition-colors opacity-50 hover:opacity-100 inline-flex items-center gap-1">
+        <button className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors opacity-100 inline-flex items-center gap-1 font-semibold">
           <Lock className="w-3 h-3" />
           Admin
         </button>
