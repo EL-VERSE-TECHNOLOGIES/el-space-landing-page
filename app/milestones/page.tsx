@@ -69,7 +69,11 @@ export default function MilestonesPage() {
     try {
       setLoading(true)
       showLoader(2)
-      const userId = localStorage.getItem('userId') || 'user-123'
+      const userId = localStorage.getItem('userId') || ''
+      if (!userId) {
+        toast.error('Please log in to view milestones')
+        return
+      }
 
       const response = await fetch(`/api/milestones?userId=${userId}`)
       const data = await response.json()
@@ -77,84 +81,14 @@ export default function MilestonesPage() {
       if (data.success && data.milestones) {
         setMilestones(data.milestones)
       } else {
-        // Mock data
-        const mockMilestones: Milestone[] = [
-          {
-            id: '1',
-            projectName: 'Website Redesign',
-            projectId: 'proj-1',
-            title: 'Homepage & Navigation',
-            description: 'Complete design and development of homepage and main navigation',
-            status: 'in_progress',
-            amount: 1500,
-            dueDate: new Date(Date.now() + 604800000).toISOString(),
-            client: 'John Developer',
-            freelancer: 'You',
-            deliverables: [
-              'Responsive homepage design',
-              'Navigation component',
-              'Hero section',
-              'Feature showcase',
-            ],
-            messages: [
-              {
-                sender: 'John Developer',
-                text: 'Looking forward to seeing the progress!',
-                timestamp: new Date(Date.now() - 3600000).toISOString(),
-              },
-            ],
-          },
-          {
-            id: '2',
-            projectName: 'Mobile App Development',
-            projectId: 'proj-2',
-            title: 'API Integration',
-            description: 'Integrate backend APIs with mobile app',
-            status: 'submitted',
-            amount: 2000,
-            dueDate: new Date(Date.now() - 259200000).toISOString(),
-            submissionDate: new Date(Date.now() - 86400000).toISOString(),
-            client: 'Sarah Johnson',
-            freelancer: 'You',
-            deliverables: [
-              'API authentication',
-              'Data sync',
-              'Error handling',
-            ],
-            messages: [
-              {
-                sender: 'You',
-                text: 'Milestone submitted for review',
-                timestamp: new Date(Date.now() - 86400000).toISOString(),
-              },
-            ],
-          },
-          {
-            id: '3',
-            projectName: 'E-commerce Platform',
-            projectId: 'proj-3',
-            title: 'Payment Gateway Setup',
-            description: 'Setup and test payment processing',
-            status: 'approved',
-            amount: 1200,
-            dueDate: new Date(Date.now() - 432000000).toISOString(),
-            submissionDate: new Date(Date.now() - 345600000).toISOString(),
-            approvalDate: new Date(Date.now() - 258000000).toISOString(),
-            client: 'Mike Chen',
-            freelancer: 'You',
-            deliverables: [
-              'Payment gateway integration',
-              'Transaction logging',
-              'Refund handling',
-            ],
-          },
-        ]
-        setMilestones(mockMilestones)
+        // No mock data - show empty list
+        setMilestones([])
       }
       hideLoader()
     } catch (error) {
       console.error('Error fetching milestones:', error)
       toast.error('Failed to load milestones')
+      setMilestones([])
       hideLoader()
     } finally {
       setLoading(false)
