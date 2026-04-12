@@ -12,7 +12,7 @@ export async function GET() {
     
     return NextResponse.json({ success: true, jobs: data });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : 'Unknown error';
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error in admin jobs API:', error);
     return NextResponse.json({ error: message }, { status: 500 });
   }

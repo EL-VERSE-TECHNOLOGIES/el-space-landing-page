@@ -25,6 +25,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<Record<string, unknown>[]>([])
   const [payments, setPayments] = useState<Record<string, unknown>[]>([])
   const [jobs, setJobs] = useState<Record<string, unknown>[]>([])
+  const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
 
   const ADMIN_PASSWORD = 'Elspace12345@'
