@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const { data: user, error } = await createUser(email, name, userType);
     if (error) {
       console.error('Error creating user:', error);
-      return NextResponse.json({ error: error.message || 'Failed to create user' }, { status: 400 });
+      return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error" || 'Failed to create user' }, { status: 400 });
     }
 
     // Update user with password hash
@@ -138,10 +138,10 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in register:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to register user' },
+      { error: error instanceof Error ? error.message : "Unknown error" || 'Failed to register user' },
       { status: 500 }
     );
   }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { data, error } = await supabase
       .from('payments')
@@ -11,8 +11,8 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
     
     return NextResponse.json({ success: true, payments: data });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in admin payments API:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }

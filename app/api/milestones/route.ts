@@ -33,9 +33,9 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
 
     return NextResponse.json({ success: true, milestone: data }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating milestone:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }
 
@@ -52,9 +52,9 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
 
     return NextResponse.json({ milestones: data });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching milestones:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }
 
@@ -171,8 +171,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, milestone });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating milestone:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }

@@ -1,7 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getAllUsers, getAllPayments, getAllJobs } from '@/lib/supabase';
 
-export async function GET(request: NextRequest) {
+interface Payment {
+  amount?: number;
+  status?: string;
+}
+
+interface Job {
+  status?: string;
+}
+
+export async function GET() {
   try {
     const users = await getAllUsers();
     const payments = await getAllPayments();
@@ -9,10 +18,10 @@ export async function GET(request: NextRequest) {
 
     const stats = {
       totalUsers: users?.length || 0,
-      totalPayments: payments?.reduce((sum: number, p: any) => sum + (p.amount || 0), 0) || 0,
-      pendingPayments: payments?.filter((p: any) => p.status === 'pending').length || 0,
+      totalPayments: payments?.reduce((sum: number, p: Payment) => sum + (p.amount || 0), 0) || 0,
+      pendingPayments: payments?.filter((p: Payment) => p.status === 'pending').length || 0,
       totalJobListings: jobs?.length || 0,
-      pendingApprovals: jobs?.filter((j: any) => j.status === 'pending').length || 0,
+      pendingApprovals: jobs?.filter((j: Job) => j.status === 'pending').length || 0,
     };
 
     return NextResponse.json({ success: true, stats });

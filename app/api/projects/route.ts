@@ -38,9 +38,9 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, project: data }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating project:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }
 
@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
     const { data, error } = await getOpenProjects();
     if (error) throw error;
     return NextResponse.json({ projects: data });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching projects:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }

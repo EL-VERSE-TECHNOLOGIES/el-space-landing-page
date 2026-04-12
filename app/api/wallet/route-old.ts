@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       return NextResponse.json(
-        { error: error.message || 'Failed to fetch wallet' },
+        { error: error instanceof Error ? error.message : "Unknown error" || 'Failed to fetch wallet' },
         { status: 400 }
       );
     }
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
       if (error) {
         return NextResponse.json(
-          { error: error.message || 'Failed to create withdrawal' },
+          { error: error instanceof Error ? error.message : "Unknown error" || 'Failed to create withdrawal' },
           { status: 400 }
         );
       }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
       if (error) {
         return NextResponse.json(
-          { error: error.message || 'Failed to update wallet' },
+          { error: error instanceof Error ? error.message : "Unknown error" || 'Failed to update wallet' },
           { status: 400 }
         );
       }

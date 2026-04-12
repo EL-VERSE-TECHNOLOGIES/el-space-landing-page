@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!type || !VALID_TYPES.includes(type as any)) {
+    if (!type || !VALID_TYPES.includes(type)) {
       return NextResponse.json(
         { error: 'Invalid request type. Must be one of: ' + VALID_TYPES.join(', ') },
         { status: 400 }
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // Generate OTP
     const otp = generateOTP(6);
-    storeOTP(email, otp, 900, type as any, metadata); // 15 minutes
+    storeOTP(email, otp, 900, type, metadata); // 15 minutes
 
     // Try to send email, but don't fail if email is not configured
     let emailSent = false;

@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     // Get wallet
     const { data: wallet, error } = await getWallet(userId);
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 400 });
     }
 
     if (!wallet) {
