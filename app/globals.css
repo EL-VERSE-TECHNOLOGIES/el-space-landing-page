@@ -72,7 +72,7 @@
 
 @layer utilities {
   .gradient-accent {
-    background: linear-gradient(to right, var(--primary), var(--accent-cyan), var(--accent-amber));
+    background: linear-gradient(to right, var(--primary), var(--accent), var(--secondary));
   }
 
   .text-balance {
