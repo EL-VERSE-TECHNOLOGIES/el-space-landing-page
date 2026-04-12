@@ -42,12 +42,12 @@ export default function JobsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-24 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-900/20 to-slate-950 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Available Jobs</h1>
-          <p className="text-slate-400">Find your next freelance opportunity</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent mb-2">Available Jobs</h1>
+          <p className="text-slate-300">Find your next freelance opportunity</p>
         </div>
 
         {/* Search & Filter */}
@@ -94,60 +94,56 @@ export default function JobsPage() {
         ) : (
           <div className="grid gap-6">
             {filteredJobs.map((job) => (
-              <Card key={job.id} className="bg-slate-800 border-slate-700 hover:border-cyan-500 transition-colors cursor-pointer">
-                <CardHeader onClick={() => router.push(`/jobs/${job.id}`)}>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-white">{job.title}</CardTitle>
-                      <CardDescription className="text-slate-400">Posted by {job.client_id}</CardDescription>
-                    </div>
-                    <Badge className="bg-cyan-500/20 text-cyan-300">{job.category}</Badge>
+              <div key={job.id} className="rounded-lg border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-blue-500/5 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(34,211,238,0.15)] transition-all cursor-pointer p-6" onClick={() => router.push(`/jobs/${job.id}`)}>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-white mb-1">{job.title}</h3>
+                    <p className="text-slate-400 text-sm">Posted by {job.client_id}</p>
                   </div>
-                </CardHeader>
+                  <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-sm font-medium">{job.category}</span>
+                </div>
 
-                <CardContent className="space-y-4">
-                  <p className="text-slate-300 line-clamp-2">{job.description}</p>
+                <p className="text-slate-300 line-clamp-2 mb-4">{job.description}</p>
 
-                  {/* Skills */}
-                  {job.required_skills && job.required_skills.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {job.required_skills.slice(0, 3).map((skill: string) => (
-                        <Badge key={skill} variant="secondary" className="bg-slate-700 text-slate-200">
-                          {skill}
-                        </Badge>
-                      ))}
-                      {job.required_skills.length > 3 && (
-                        <Badge variant="secondary" className="bg-slate-700 text-slate-200">
-                          +{job.required_skills.length - 3} more
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Job Details */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-700">
-                    <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <DollarSign className="h-4 w-4" />
-                      <span>${job.budget_min} - ${job.budget_max}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <Calendar className="h-4 w-4" />
-                      <span>{job.timeline}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <Users className="h-4 w-4" />
-                      <span>Applications: 0</span>
-                    </div>
+                {/* Skills */}
+                {job.required_skills && job.required_skills.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {job.required_skills.slice(0, 3).map((skill: string) => (
+                      <span key={skill} className="px-3 py-1 rounded-full bg-slate-700/50 text-slate-300 text-xs font-medium">
+                        {skill}
+                      </span>
+                    ))}
+                    {job.required_skills.length > 3 && (
+                      <span className="px-3 py-1 rounded-full bg-slate-700/50 text-slate-300 text-xs font-medium">
+                        +{job.required_skills.length - 3} more
+                      </span>
+                    )}
                   </div>
+                )}
 
-                  <Button
-                    onClick={() => router.push(`/jobs/${job.id}`)}
-                    className="w-full bg-cyan-500 hover:bg-cyan-600 text-white"
-                  >
-                    View Details
-                  </Button>
-                </CardContent>
-              </Card>
+                {/* Job Details */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 border-t border-slate-700/50 mb-4">
+                  <div className="flex items-center gap-2 text-sm text-slate-400">
+                    <DollarSign className="h-4 w-4 text-cyan-400" />
+                    <span className="text-white font-semibold">${job.budget_min} - ${job.budget_max}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-slate-400">
+                    <Calendar className="h-4 w-4 text-blue-400" />
+                    <span className="text-white font-semibold">{job.timeline}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-slate-400">
+                    <Users className="h-4 w-4 text-purple-400" />
+                    <span className="text-white font-semibold">0 Applied</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => router.push(`/jobs/${job.id}`)}
+                  className="w-full py-2 px-4 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold transition-all"
+                >
+                  View Details
+                </button>
+              </div>
             ))}
           </div>
         )}
