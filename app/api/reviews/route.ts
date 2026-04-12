@@ -27,9 +27,9 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
 
     return NextResponse.json({ success: true, review: data }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating review:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }
 
@@ -61,8 +61,8 @@ export async function GET(request: NextRequest) {
         totalReviews: data.filter((r: any) => r.is_public).length,
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching reviews:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }

@@ -7,9 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
-import { LayoutDashboard, Users, DollarSign, FileText, Settings, LogOut, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { LayoutDashboard, Users, DollarSign, FileText, Settings, LogOut, CheckCircle, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminDashboard() {
@@ -23,10 +22,9 @@ export default function AdminDashboard() {
     totalJobListings: 0,
     pendingApprovals: 0,
   })
-  const [users, setUsers] = useState<any[]>([])
-  const [payments, setPayments] = useState<any[]>([])
-  const [jobs, setJobs] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
+  const [users, setUsers] = useState<Record<string, unknown>[]>([])
+  const [payments, setPayments] = useState<Record<string, unknown>[]>([])
+  const [jobs, setJobs] = useState<Record<string, unknown>[]>([])
   const [activeTab, setActiveTab] = useState('overview')
 
   const ADMIN_PASSWORD = 'Elspace12345@'
@@ -351,9 +349,9 @@ export default function AdminDashboard() {
                           </Badge>
                           {user.status === 'active' && (
                             <AlertDialog>
-                              <DialogTrigger asChild>
+                              <AlertDialogTrigger asChild>
                                 <Button size="sm" variant="destructive">Suspend</Button>
-                              </DialogTrigger>
+                              </AlertDialogTrigger>
                               <AlertDialogContent className="bg-slate-800 border-slate-700">
                                 <AlertDialogHeader>
                                   <AlertDialogTitle className="text-white">Suspend User</AlertDialogTitle>

@@ -30,9 +30,9 @@ export async function GET(request: NextRequest) {
         averageProjectValue: completedProjects > 0 ? (total / completedProjects).toFixed(2) : 0,
       }
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching earnings:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }
 
@@ -82,8 +82,8 @@ export async function POST(request: NextRequest) {
         createdAt: new Date().toISOString(),
       }
     }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error processing withdrawal:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }

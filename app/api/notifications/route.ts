@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       return NextResponse.json(
-        { error: error.message },
+        { error: (error instanceof Error ? error.message : "Unknown error") },
         { status: 400 }
       );
     }
@@ -162,7 +162,7 @@ export async function PATCH(request: NextRequest) {
 
     if (error) {
       return NextResponse.json(
-        { error: error.message },
+        { error: (error instanceof Error ? error.message : "Unknown error") },
         { status: 400 }
       );
     }

@@ -15,7 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'el-space-secret-key';
 
 function verifyOTPToken(token: string, type: string) {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, JWT_SECRET);
     return decoded.verified && decoded.type === type;
   } catch (e) {
     return false;
@@ -57,9 +57,9 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in payments API:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error instanceof Error ? error.message : "Unknown error") }, { status: 500 });
   }
 }
 
