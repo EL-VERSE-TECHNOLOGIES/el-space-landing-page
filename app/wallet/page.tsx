@@ -267,60 +267,44 @@ export default function WalletPage() {
 
         {/* Balance Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-slate-800/50 border-blue-500/20 backdrop-blur">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-blue-200">Available Balance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                ${(wallet?.available_for_withdrawal || 0).toFixed(2)}
-              </div>
-              <p className="text-xs text-blue-300 mt-1">Ready to withdraw</p>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-blue-500/5 p-6 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(34,211,238,0.15)] transition-all">
+            <p className="text-slate-400 text-sm font-medium">Available Balance</p>
+            <div className="text-3xl font-bold text-white mt-2">
+              ${(wallet?.available_for_withdrawal || 0).toFixed(2)}
+            </div>
+            <p className="text-xs text-slate-400 mt-2">Ready to withdraw</p>
+          </div>
 
-          <Card className="bg-slate-800/50 border-blue-500/20 backdrop-blur">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-blue-200">Pending Balance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-400">
-                ${(wallet?.pending_balance || 0).toFixed(2)}
-              </div>
-              <p className="text-xs text-blue-300 mt-1">Awaiting release</p>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 p-6 hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.15)] transition-all">
+            <p className="text-slate-400 text-sm font-medium">Pending Balance</p>
+            <div className="text-3xl font-bold text-yellow-400 mt-2">
+              ${(wallet?.pending_balance || 0).toFixed(2)}
+            </div>
+            <p className="text-xs text-slate-400 mt-2">Awaiting release</p>
+          </div>
 
-          <Card className="bg-slate-800/50 border-blue-500/20 backdrop-blur">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-blue-200">Total Earned</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-400">
-                ${(wallet?.total_earned || 0).toFixed(2)}
-              </div>
-              <p className="text-xs text-blue-300 mt-1">All time</p>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5 p-6 hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all">
+            <p className="text-slate-400 text-sm font-medium">Total Earned</p>
+            <div className="text-3xl font-bold text-emerald-400 mt-2">
+              ${(wallet?.total_earned || 0).toFixed(2)}
+            </div>
+            <p className="text-xs text-slate-400 mt-2">All time</p>
+          </div>
 
-          <Card className="bg-slate-800/50 border-blue-500/20 backdrop-blur">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-blue-200">Total Withdrawn</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-400">
-                ${(wallet?.total_withdrawn || 0).toFixed(2)}
-              </div>
-              <p className="text-xs text-blue-300 mt-1">Withdrawn to account</p>
-            </CardContent>
-          </Card>
+          <div className="rounded-lg border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-pink-500/5 p-6 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all">
+            <p className="text-slate-400 text-sm font-medium">Total Withdrawn</p>
+            <div className="text-3xl font-bold text-purple-400 mt-2">
+              ${(wallet?.total_withdrawn || 0).toFixed(2)}
+            </div>
+            <p className="text-xs text-slate-400 mt-2">Withdrawn to account</p>
+          </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex gap-4 mb-8 flex-wrap">
           <Dialog open={fundDialogOpen} onOpenChange={setFundDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-green-600 hover:bg-green-700 text-white gap-2">
+              <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white gap-2 font-semibold py-2">
                 <Plus className="w-4 h-4" />
                 Fund Wallet
               </Button>

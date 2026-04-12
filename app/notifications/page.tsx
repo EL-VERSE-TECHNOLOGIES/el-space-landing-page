@@ -310,18 +310,18 @@ export default function NotificationsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Notifications</h1>
-            <p className="mt-1 text-slate-600">Stay updated with your latest activity</p>
+            <h1 className="text-3xl font-bold text-white">Notifications</h1>
+            <p className="mt-1 text-slate-400">Stay updated with your latest activity</p>
           </div>
           <div className="flex items-center gap-2">
             {unreadCount > 0 && (
-              <Button variant="outline" size="sm" onClick={markAllRead}>
-                <CheckCheck className="mr-2 size-4" />
+              <Button variant="outline" size="sm" onClick={markAllRead} className="border-slate-600 text-white hover:bg-slate-800/50">
+                <CheckCheck className="mr-2 h-4 w-4" />
                 Mark all read
               </Button>
             )}
@@ -330,34 +330,54 @@ export default function NotificationsPage() {
 
         {/* Stats */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatsCard
-            icon={Bell}
-            label="Total Notifications"
-            value={notifications.length}
-            color="bg-slate-100 text-slate-600"
-          />
-          <StatsCard
-            icon={AlertCircle}
-            label="Unread"
-            value={unreadCount}
-            color="bg-cyan-100 text-cyan-600"
-          />
-          <StatsCard
-            icon={FolderKanban}
-            label="Projects"
-            value={projectCount}
-            color="bg-cyan-100 text-cyan-600"
-          />
-          <StatsCard
-            icon={MessageSquare}
-            label="Messages"
-            value={messageCount}
-            color="bg-amber-100 text-amber-600"
-          />
+          <div className="rounded-lg border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm p-4 hover:border-slate-600/50 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center rounded-lg h-10 w-10 bg-cyan-500/20 text-cyan-400">
+                <Bell className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{notifications.length}</p>
+                <p className="text-xs text-slate-400">Total Notifications</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-blue-500/5 p-4 hover:border-cyan-500/50 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center rounded-lg h-10 w-10 bg-cyan-500/20 text-cyan-400">
+                <AlertCircle className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{unreadCount}</p>
+                <p className="text-xs text-slate-400">Unread</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-pink-500/5 p-4 hover:border-purple-500/50 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center rounded-lg h-10 w-10 bg-purple-500/20 text-purple-400">
+                <FolderKanban className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{projectCount}</p>
+                <p className="text-xs text-slate-400">Projects</p>
+              </div>
+            </div>
+          </div>
+          <div className="rounded-lg border border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 p-4 hover:border-yellow-500/50 transition-all">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center rounded-lg h-10 w-10 bg-yellow-500/20 text-yellow-400">
+                <MessageSquare className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-white">{messageCount}</p>
+                <p className="text-xs text-slate-400">Messages</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Filter Tabs */}
-        <div className="mb-6 flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white p-2">
+        <div className="mb-6 flex flex-wrap items-center gap-2 rounded-lg border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm p-2">
           {filters.map((filter) => {
             const count =
               filter.key === "all"
@@ -377,28 +397,25 @@ export default function NotificationsPage() {
                 className={cn(
                   "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   activeFilter === filter.key
-                    ? "bg-cyan-50 text-cyan-700"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    ? "bg-cyan-500/20 text-cyan-300"
+                    : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
                 )}
               >
                 {filter.label}
-                <Badge
-                  variant="secondary"
-                  className={cn(
-                    "ml-1",
-                    activeFilter === filter.key
-                      ? "bg-cyan-100 text-cyan-700"
-                      : "bg-slate-100 text-slate-600"
-                  )}
-                >
+                <span className={cn(
+                  "px-2 py-0.5 rounded-full text-xs font-medium",
+                  activeFilter === filter.key
+                    ? "bg-cyan-500/30 text-cyan-300"
+                    : "bg-slate-700/50 text-slate-400"
+                )}>
                   {count}
-                </Badge>
+                </span>
               </button>
             );
           })}
           <div className="ml-auto flex items-center gap-2">
             {unreadCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={markFilterRead}>
+              <Button variant="ghost" size="sm" onClick={markFilterRead} className="text-slate-300 hover:bg-slate-800/50">
                 Mark filter read
               </Button>
             )}
@@ -408,10 +425,10 @@ export default function NotificationsPage() {
         {/* Notification List */}
         <div className="space-y-4">
           {filteredNotifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white py-16">
-              <Bell className="mb-4 size-12 text-slate-300" />
-              <h3 className="text-lg font-semibold text-slate-900">No notifications</h3>
-              <p className="mt-1 text-slate-500">
+            <div className="flex flex-col items-center justify-center rounded-lg border border-slate-700/50 bg-slate-900/40 backdrop-blur-sm py-16">
+              <Bell className="mb-4 h-12 w-12 text-slate-600" />
+              <h3 className="text-lg font-semibold text-white">No notifications</h3>
+              <p className="mt-1 text-slate-400">
                 {activeFilter === "unread"
                   ? "All caught up! No unread notifications."
                   : "No notifications in this category yet."}
